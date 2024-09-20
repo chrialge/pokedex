@@ -1,0 +1,93 @@
+body {
+    background-color: #c32f27;
+}
+
+#site_header {
+    padding-bottom: 20px;
+    .title {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        color: white;
+    }
+
+    .right_navbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        .searchbar {
+            flex-grow: 1;
+            background-color: white;
+            display: flex;
+            gap: 4px;
+            border-radius: 15px;
+            padding: 10px 10px;
+            align-items: center;
+            color: #c32f27;
+
+            & > input {
+                background-color: white;
+                color: #c32f27;
+                border: 0;
+                outline: none;
+                width: 100%;
+            }
+        }
+        .dropdown_menu {
+            color: #c32f27;
+            background-color: white;
+            padding: 10px 12px;
+            border-radius: 50%;
+        }
+    }
+}
+
+#site_main {
+    .container_pokemon {
+        display: flex;
+        background-color: white;
+        border-radius: 10px;
+        padding: 30px 15px;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 10px;
+
+        .card {
+            border-radius: 10px;
+            position: relative;
+            box-shadow: 1px 1px 5px black;
+            background: linear-gradient(
+                to bottom,
+                white 0%,
+                white 60%,
+                #eaeaea 60%,
+                #eaeaea 100%
+            );
+            padding: 5px;
+            .number_pokemon {
+                position: absolute;
+                right: 5px;
+                color: gray;
+            }
+
+            .img_pokemon {
+                & > img {
+                    width: 100%;
+                }
+            }
+
+            .name_pokemon {
+                position: absolute;
+                bottom: 0;
+                display: block;
+                width: 100%;
+                text-align: center;
+            }
+        }
+    }
+}
+
+.col-3 {
+    width: calc(100% / 12 * 4 - 30px);
+}
