@@ -1,8 +1,9 @@
 <script>
-import HeaderApp from './components/HeaderApp.vue';
-import MainApp from './components/MainApp.vue'
+import HeaderApp from './view/components/HeaderApp.vue';
+import MainApp from './view/components/MainApp.vue'
 
 export default {
+  name: "App",
   data() {
     return {
 
@@ -17,8 +18,7 @@ export default {
 
 <template>
 
-  <HeaderApp />
-  <MainApp />
+  <router-view></router-view>
 
 
 </template>

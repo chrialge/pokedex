@@ -16,6 +16,7 @@ export const state = reactive({
                 axios.get(urlPokemon).then((resp) => {
 
                     this.pokemons.push(resp.data)
+
                 })
 
             }
@@ -23,8 +24,11 @@ export const state = reactive({
         })
     },
 
-    filterPokemon() {
-
+    filterPokemon(search) {
+        console.log(search);
+        const result = this.pokemons.filter((pokemon) => pokemon.name.includes(search))
+        this.pokemons = result;
+        console.log(this.pokemons)
     }
 })
 

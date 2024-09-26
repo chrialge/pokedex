@@ -1,24 +1,19 @@
 <script>
-import axios from 'axios';
+import { state } from '../../state.js';
 export default {
     name: 'HeaderApp',
     data() {
         return {
             search: '',
-
+            state,
         }
     },
     methods: {
         searchPokemon() {
             if (this.search.length >= 2) {
-                console.log(this.search)
-                const url = 'https://pokeapi.co/api/v2/pokemon/' + this.search;
-                axios.get(url).then((response) => {
-                    console.log(response.data);
-                }).catch(err => {
-                    console.error(err);
-
-                })
+                this.state.filterPokemon(this.search);
+            } else {
+                this.state.callApi();
             }
         }
     }
