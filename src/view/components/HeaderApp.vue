@@ -6,6 +6,8 @@ export default {
         return {
             search: '',
             state,
+            teams: [],
+            value: 5,
         }
     },
     methods: {
@@ -15,7 +17,22 @@ export default {
             } else {
                 this.state.callApi();
             }
+        },
+        getVolume(){
+            const volumeEl = document.getElementById('volume_music');
+            if(volumeEl){
+                console.log(volumeEl.value)
+            }
+
         }
+    },
+    mounted() {
+        console.log(localStorage.getItem('teams'))
+        if (localStorage.getItem('teams')) {
+            const teams = JSON.parse(localStorage.getItem('teams'));
+            teams.forEach(team => this.teams.push(team.name))
+        }
+        console.log(this.teams)
     }
 
 }
@@ -39,8 +56,32 @@ export default {
             <div class="dropdown_menu">
                 <i class="fa-solid fa-bars"></i>
             </div>
-        </div>
 
+        </div>
+        <div class="dropdown_menu">
+            <div class="teams">
+                <h5>
+                    Teams
+                    <img src="../../../public/img/pokemon-trainer.png" alt="" width="20px">
+                </h5>
+                <ul>
+                    <li v-for="team in this.teams">
+                        <img src="../../../public/img/pokeballs.png" alt="" width="20px">
+                        {{ team }}
+                    </li>
+
+                </ul>
+            </div>
+            <div class="volume d-flex align-items-center gap-1">
+                <i class="fa-solid fa-volume-high"></i>
+                <input id="volume_music" min="0" max="10" step="1" type="range" :onchange="getVolume()" :oninput="getVolume()" v-model="value"/>
+                <audio id="audio_mp3" autoplay loop
+                    src="../../../public/audio/music-sottofondo.mp3">
+
+                    <span>Il tuo browser non riesce a caricare l'audio</span>
+                </audio>
+            </div>
+        </div>
 
     </header>
     <!-- /#site_header -->

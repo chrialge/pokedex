@@ -12,6 +12,9 @@ export default {
     components: {
         HeaderApp,
         MainApp,
+    },
+    mounted(){
+        document.getElementById('app').style.backgroundColor = '#c32f27';
     }
 }
 </script>
