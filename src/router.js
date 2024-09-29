@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import AppHome from './view/AppHome.vue';
-import showPoke from './view/showPoke.vue';
+import TeamPoke from './view/TeamPoke.vue';
 import ShowPoke from './view/showPoke.vue';
 
 
@@ -13,9 +13,14 @@ const router = createRouter({
             component: AppHome,
         },
         {
-            path: '/projects/:slug',
+            path: '/pokemons/:slug',
             name: 'showPoke',
             component: ShowPoke,
+        },
+        {
+            path: '/teams/:slug',
+            name: 'teams',
+            component: TeamPoke,
         },
         // {
         //     path: '/:patchMatch(.*)*',

@@ -278,8 +278,6 @@ $poisom: #a040a0;
     display: flex;
     align-items: center;
     justify-content: center;
-    & > .card {
-    }
 }
 
 .modal-confirm {
@@ -440,4 +438,12 @@ p {
         Arial, Sans-serif;
     font-size: 32px;
     margin-top: 30px;
+}
+
+.header_teams {
+    padding: 5px 10px;
+}
+
+.header_teams:hover {
+    background-color: rgba(255, 255, 255, 0.217);
 }
