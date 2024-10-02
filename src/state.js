@@ -3,7 +3,7 @@ import { reactive } from 'vue'
 import axios from 'axios'
 
 export const state = reactive({
-    url: 'https://pokeapi.co/api/v2/pokemon?limit=1302/',
+    url: 'https://pokeapi.co/api/v2/pokemon?limit=151/',
     pokemons: [],
 
 

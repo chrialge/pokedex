@@ -163,10 +163,20 @@ export default {
         }
 
         // prendo l'elemento audio 
-        const audioEl = document.getElementById('audio_mp3');
+        const audioEl = document.getElementById('audio_mp3').play();
 
-        // richiamo il metodo play del tag audio
-        audioEl.play()
+        if (audioEl !== undefined) {
+            audioEl.then(_ => {
+                // Autoplay started!
+            }).catch(error => {
+                console.error(error);
+            });
+        }
+
+
+        function playAudio() {
+        audioEl.play();
+        }
 
         // do come valore di loop dell'elemen=nto audio true
         audioEl.loop = true;

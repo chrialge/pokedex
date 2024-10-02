@@ -1,10 +1,14 @@
 <script>
 import axios from 'axios';
+import EvolutionPoke from './components/EvolutionPoke.vue';
+
+
 export default {
     name: 'ShowPoke',
     data() {
         return {
             base_api_url: "https://pokeapi.co/api/v2/pokemon",
+            evolutionChain: '',
             pokemon: null,
             color: null,
             activeModal: false,
@@ -87,6 +91,9 @@ export default {
 
         }
     },
+    components:{
+        EvolutionPoke,
+    },
     methods: {
         getSinglePokemon(params) {
             this.typesPoke = [];
@@ -102,15 +109,20 @@ export default {
 
                     axios.get(response.data.species.url)
                         .then(response =>{
-                            response.data.flavor_text_entries.forEach(text =>{
+                            this.evolutionChain = response.data.evolution_chain.url;
+                            response.data.flavor_text_entries.forEach((text, index) =>{
                                 if(text.language.name == 'en'){
-                                    this.description = text.flavor_text
+                                    if(index == 0){
+                                        this.description = text.flavor_text
+                                        console.log(this.description)
+                                    }
+
                                 }
                             })
                         }).catch(error =>{
                             console.error(error)
                         })
-                    
+                    console.log(this.description)
 
                     this.types.forEach(type => {
 
@@ -441,9 +453,10 @@ export default {
 
                     </div>
                 </div>
-                <p class="description">
-                    {{this.description}}
+                <p class="description text-dark" style="font-size: 20px;">
+                    {{this.description.replace('', ' ')}}
                 </p>
+                <EvolutionPoke  :url="this.evolutionChain"/>
                 <h1>Base Stasts</h1>
                 <div class="stats_poke" v-for="stat in this.pokemon.stats">
                     <div id="card_stat" class="card_stat">
