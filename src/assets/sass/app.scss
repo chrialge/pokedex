@@ -57,13 +57,20 @@ $poisom: #a040a0;
 }
 
 #site_main {
+    .container_main {
+        background-color: white;
+        border-radius: 10px;
+        text-align: center;
+        padding-top: 20px;
+    }
     .container_pokemon {
+        min-height: 85vh;
         display: flex;
         background-color: white;
         border-radius: 10px;
         padding: 30px 15px;
         flex-wrap: wrap;
-        justify-content: space-between;
+        justify-content: center;
         gap: 10px;
         text-decoration: none;
 
@@ -93,9 +100,10 @@ $poisom: #a040a0;
                 display: flex;
                 justify-content: center;
                 align-items: center;
+                height: 130px;
                 & > img {
                     width: 90%;
-                    height: 100%;
+                    height: 90%;
                 }
             }
 

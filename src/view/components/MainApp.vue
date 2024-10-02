@@ -26,7 +26,7 @@ export default {
     <main id="site_main">
         <div class="container_pokemon">
 
-            <div class="card col-3" v-for="pokemon in state.pokemons">
+            <div class="card" style="width: 150px; height: 140px; " v-for="pokemon in state.pokemons">
                 <router-link :to="{ name: 'showPoke', params: { slug: pokemon.name } }">
                     <div class="number_pokemon">
                         <span v-if="pokemon.id.toString().length == 1">#000{{ pokemon.id }}</span>
@@ -37,11 +37,11 @@ export default {
                     </div>
                     <div class="img_pokemon">
                         <img v-if="pokemon.sprites.other.dream_world.front_default" id="img_poke"
-                            :src="pokemon.sprites.other.dream_world.front_default" alt="">
+                            :src="pokemon.sprites.other.dream_world.front_default" alt="" class="">
                         <img v-else id="img_poke" :src="pokemon.sprites.other.home.front_default" alt="">
                     </div>
                     <div class="name_pokemon">
-                        <span id="name_poke">{{ capitalizeFirstLetter(pokemon.name.replace("-", " ")) }}</span>
+                        <span id="name_poke" class="text-dark">{{ capitalizeFirstLetter(pokemon.name.replace("-", " ")) }}</span>
                     </div>
                 </router-link>
 

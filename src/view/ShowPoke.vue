@@ -1,6 +1,5 @@
 <script>
 import axios from 'axios';
-import EvolutionPoke from './components/EvolutionPoke.vue';
 
 
 export default {
@@ -10,6 +9,7 @@ export default {
             base_api_url: "https://pokeapi.co/api/v2/pokemon",
             evolutionChain: '',
             pokemon: null,
+            evolutionPoke: [],
             color: null,
             activeModal: false,
             succefull: false,
@@ -91,9 +91,6 @@ export default {
 
         }
     },
-    components:{
-        EvolutionPoke,
-    },
     methods: {
         getSinglePokemon(params) {
             this.typesPoke = [];
@@ -102,7 +99,7 @@ export default {
             axios
                 .get(url)
                 .then(response => {
-                    console.log(response.data.types[0].type.name);
+   
 
                     let typePoke = response.data.types[0].type.name;
                     const typespoke = response.data.types
@@ -110,11 +107,12 @@ export default {
                     axios.get(response.data.species.url)
                         .then(response =>{
                             this.evolutionChain = response.data.evolution_chain.url;
+                            this.getEvolution()
                             response.data.flavor_text_entries.forEach((text, index) =>{
                                 if(text.language.name == 'en'){
                                     if(index == 0){
                                         this.description = text.flavor_text
-                                        console.log(this.description)
+
                                     }
 
                                 }
@@ -122,7 +120,7 @@ export default {
                         }).catch(error =>{
                             console.error(error)
                         })
-                    console.log(this.description)
+
 
                     this.types.forEach(type => {
 
@@ -283,13 +281,60 @@ export default {
                 }
             return string
 
-        }
+        },
+
+        getEvolution(){
+        axios.get(this.evolutionChain)
+            .then(response =>{
+                this.evolutionPoke = [];
+                let urlPokemon = [];
+
+
+                if(response.data.chain.species !== this.evolutionChain){
+                    urlPokemon.push(response.data.chain.species.name)
+                    if(response.data.chain.evolves_to.length>0){
+                        urlPokemon.push(response.data.chain.evolves_to[0].species.name)
+                    }
+                    
+                    if(response.data.chain.evolves_to[0].evolves_to.length > 0){
+                        urlPokemon.push(response.data.chain.evolves_to[0].evolves_to[0].species.name)
+                    }
+                }
+
+
+                if(urlPokemon.length > 0){
+                    for (let index = 0; index < urlPokemon.length; index++) {
+                        const poke = urlPokemon[index];
+
+                        axios.get("https://pokeapi.co/api/v2/pokemon/" + poke)
+                        .then(resp =>{
+                            if(poke == resp.data.name){
+                                this.evolutionPoke.push(resp.data)
+                            }
+
+                        }).catch(error =>{
+                            console.error(error)
+                        })
+                    }
+                }
+                
+
+                        
+                    
+                
+
+
+            }).catch(error =>{
+                console.error(error)
+            })
+    },
 
 
     },
     mounted() {
 
         this.getSinglePokemon(this.$route.params.slug);
+        
 
 
     }
@@ -456,7 +501,8 @@ export default {
                 <p class="description text-dark" style="font-size: 20px;">
                     {{this.description.replace('', ' ')}}
                 </p>
-                <EvolutionPoke  :url="this.evolutionChain"/>
+                
+
                 <h1>Base Stasts</h1>
                 <div class="stats_poke" v-for="stat in this.pokemon.stats">
                     <div id="card_stat" class="card_stat">
@@ -494,6 +540,24 @@ export default {
                             </div>
                         </div>
 
+                    </div>
+                </div>
+
+                <div class="evolution_container mt-5" v-if="evolutionPoke.length > 0">
+                    <h2 class="text-center text-secondary">Evolution</h2>
+                    <div class="d-flex justify-content-around align-items-center" :class="'row-cols-' + this.evolutionPoke.length">
+                        <div class="card_poke_evolution " v-for="poke in this.evolutionPoke" style="max-width: 200px; height: 220px;">
+
+                                <div class="img_pokemon" >
+                                    <img v-if="poke.sprites.other.dream_world.front_default" height="200px" class="w-100" id="img_poke"
+                                        :src="poke.sprites.other.dream_world.front_default" alt="">
+                                    <img v-else id="img_poke" :src="poke.sprites.other.home.front_default" alt="">
+                                </div>
+                            <div class="name text-center">
+                                <h5>{{ capitalizeFirstLetter(poke.name.replace("-", " ")) }}</h5>
+                            </div>
+                        
+                        </div>
                     </div>
                 </div>
             </div>
