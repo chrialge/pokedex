@@ -106,8 +106,10 @@ export default {
 
                     axios.get(response.data.species.url)
                         .then(response =>{
-                            this.evolutionChain = response.data.evolution_chain.url;
-                            this.getEvolution()
+
+                            
+                            this.getEvolution(response.data.evolution_chain.url)
+
                             response.data.flavor_text_entries.forEach((text, index) =>{
                                 if(text.language.name == 'en'){
                                     if(index == 0){
@@ -172,6 +174,7 @@ export default {
                 // salvo i teams
                 let teams = JSON.parse(localStorage.getItem('teams'));
 
+                
                 // salvo il valore dell'input
                 const value = document.getElementById('name_team').value;
 
@@ -180,40 +183,59 @@ export default {
 
                 let badResponse = false;
 
+                if(teams.length === 6){
+                    badResponse = true;
+                }else{
+
                 // itireo nei teams
                 teams.forEach(team => {
+                        // se il nome dell'input e uguale al valore immesso
+                        if (team.name === value) {
 
-                    // se il nome dell'input e uguale al valore immesso
-                    if (team.name === value) {
+                            // cambio il valore di teamNew
+                            teamNew = false;
 
-                        // cambio il valore di teamNew
-                        teamNew = false;
+                            // se non include gia l'id del pokemon
+                            if (!team.pokemon.includes(id)) {
 
-                        // se non include gia l'id del pokemon
-                        if (!team.pokemon.includes(id)) {
+                                // pusha l'id
+                                team.pokemon.push(id)
+                            } else {
 
-                            // pusha l'id
-                            team.pokemon.push(id)
-                        } else {
+                                badResponse = true;
 
-                            badResponse = true;
+                            }
 
                         }
+                    });
+                }
 
-                    }
-                });
+                
+
+                
 
                 // se il valore di teamNew
                 if (badResponse == true) {
-                    // messaggio che dice che esiste gia
-                    this.message = `you cannot add pokemon, because is already on your team ${value}`
+
+                    if(teams.length === 6){
+
+                        this.message = "You can't have more of six teams"
+                    }else{
+                        // messaggio che dice che esiste gia
+                        this.message = `you cannot add pokemon, because is already on your team ${value}`
+                    }
+
 
                     this.notSuccess = true;
                 } else if (teamNew === true) {
 
+                    
+
                     // variabile del formato del team
                     const formatTeam = { 'name': value, 'pokemon': [id] };
 
+                    // pusho il team
+                    teams.push(formatTeam);
 
                     // messaggio di creazione di un nuovo team
                     this.message = `New Team ${formatTeam.name} has been created successfully.`
@@ -222,8 +244,8 @@ export default {
                     // set team con le nuove modifiche fatte a team
                     localStorage.setItem('teams', JSON.stringify(teams));
 
-                    // pusho il team
-                    teams.push(formatTeam);
+
+
                 } else {
                     // messaggio per aver aggiunto il pokemon
                     this.message = `Congratulations, your team member has been successfully added!`
@@ -259,6 +281,7 @@ export default {
 
 
         },
+
         number_format(numero){
 
             let number = numero.toString().split('');
@@ -266,69 +289,102 @@ export default {
 
                 for (let index = 0; index < number.length; index++) {
                     const singleNumber = number[index];
-
-                    if(index == number.length - 1){
-                        if(singleNumber == 0){
-
-                        }else{
-                            string += ',' + singleNumber 
-                        }
-                        
+                    if(number.length === 1){
+                        string = '0,' + singleNumber
                     }else{
-                        string += singleNumber;
+                        if(index == number.length - 1){
+                            if(singleNumber == 0){
+                                
+                            }else{
+                                string += ',' + singleNumber 
+                            }
+                            
+                        }else{
+                            string += singleNumber;
+                        }
                     }
-
                 }
             return string
+        },
+
+        getEvolution(url){
+            if(this.evolutionChain  != url){
+
+                this.evolutionChain = url;
+                axios.get(this.evolutionChain)
+                    .then(response =>{
+                        this.evolutionPoke = [];
+                        let urlPokemon = [];
+
+                        console.log(response.data.chain, this.evolutionChain)
+                        if(response.data.chain.species !== this.evolutionChain){
+                            urlPokemon.push(response.data.chain.species.name)
+                            axios.get("https://pokeapi.co/api/v2/pokemon/" + response.data.chain.species.name)
+                                .then(resp =>{
+                                    
+                                        this.evolutionPoke.push(resp.data)
+                             
+
+                                }).catch(error =>{
+                                    console.error(error)
+                                })
+                            if(response.data.chain.evolves_to.length>0){
+                                if(response.data.chain.evolves_to.length == 1){
+                                    urlPokemon.push(response.data.chain.evolves_to[0].species.name)
+
+                                    axios.get("https://pokeapi.co/api/v2/pokemon/" + response.data.chain.evolves_to[0].species.name)
+                                .then(resp =>{
+                                   
+                                        this.evolutionPoke.push(resp.data)
+                                
+
+                                }).catch(error =>{
+                                    console.error(error)
+                                })
+                                }else{
+                                    response.data.chain.evolves_to.forEach(poke =>{
+                                        urlPokemon.push(poke.species.name)
+
+                                        axios.get("https://pokeapi.co/api/v2/pokemon/" + poke.species.name)
+                                            .then(resp =>{
+  
+                                                    this.evolutionPoke.push(resp.data)
+
+
+                                            }).catch(error =>{
+                                                console.error(error)
+                                            })
+                                    }) 
+                                }
+                                
+                            }
+                            
+                            if(response.data.chain.evolves_to[0].evolves_to.length > 0){
+                                urlPokemon.push(response.data.chain.evolves_to[0].evolves_to[0].species.name)
+
+                                axios.get("https://pokeapi.co/api/v2/pokemon/" + response.data.chain.evolves_to[0].evolves_to[0].species.name)
+                                .then(resp =>{
+                                    
+                                    
+                                        this.evolutionPoke.push(resp.data)
+                             
+
+                                }).catch(error =>{
+                                    console.error(error)
+                                })
+                            }
+                            
+                        }
+                }).catch(error =>{
+                    console.error(error)
+                })
+            }
 
         },
 
-        getEvolution(){
-        axios.get(this.evolutionChain)
-            .then(response =>{
-                this.evolutionPoke = [];
-                let urlPokemon = [];
-
-
-                if(response.data.chain.species !== this.evolutionChain){
-                    urlPokemon.push(response.data.chain.species.name)
-                    if(response.data.chain.evolves_to.length>0){
-                        urlPokemon.push(response.data.chain.evolves_to[0].species.name)
-                    }
-                    
-                    if(response.data.chain.evolves_to[0].evolves_to.length > 0){
-                        urlPokemon.push(response.data.chain.evolves_to[0].evolves_to[0].species.name)
-                    }
-                }
-
-
-                if(urlPokemon.length > 0){
-                    for (let index = 0; index < urlPokemon.length; index++) {
-                        const poke = urlPokemon[index];
-
-                        axios.get("https://pokeapi.co/api/v2/pokemon/" + poke)
-                        .then(resp =>{
-                            if(poke == resp.data.name){
-                                this.evolutionPoke.push(resp.data)
-                            }
-
-                        }).catch(error =>{
-                            console.error(error)
-                        })
-                    }
-                }
-                
-
-                        
-                    
-                
-
-
-            }).catch(error =>{
-                console.error(error)
-            })
-    },
-
+        returnPage(){
+            history.back()
+        }
 
     },
     mounted() {
@@ -361,7 +417,7 @@ export default {
                     </div>
                     <div class="modal-body text-center">
                         <h4>Great!</h4>
-                        <p>{{ message }}</p>
+                        <p class="text-dark" style="font-size: 18px;">{{ message }}</p>
 
                     </div>
                 </div>
@@ -381,7 +437,7 @@ export default {
                     </div>
                     <div class="modal-body text-center">
                         <h4>sorry!</h4>
-                        <p>{{ message }}</p>
+                        <p class="text-dark" style="font-size: 18px;">{{ this.message }}</p>
 
                     </div>
                 </div>
@@ -420,9 +476,9 @@ export default {
 
         <div class="header" id="header_poke">
             <div class="left_header">
-                <router-link :to="{ name: 'home' }">
-                    <i class="fa fa-arrow-left" aria-hidden="true"></i>
-                </router-link>
+
+                    <i class="fa fa-arrow-left" aria-hidden="true" style="font-size: 25px; cursor: pointer;" @click="returnPage()"></i>
+
                 <h2>{{ capitalizeFirstLetter(pokemon.name.replace("-", " ")) }}</h2>
             </div>
             <div class="right_header">
@@ -440,7 +496,7 @@ export default {
                 v-if="this.pokemon.id > 1"></i>
             <img v-if="pokemon.sprites.other.dream_world.front_default" id="img_poke"
                 :src="pokemon.sprites.other.dream_world.front_default" alt="">
-            <img v-else id="img_poke" :src="pokemon.sprites.other.home.front_default" alt="">
+
             <i class="fa fa-chevron-right" aria-hidden="true" @click="nextPokemon(this.pokemon.id)"></i>
         </div>
 
@@ -451,18 +507,14 @@ export default {
                     <img src="../../public/img/pokeball_catch.png" alt="" width="20px">
                     <h3 class="m-0">Catch!</h3>
                 </button>
-
-
-
-
-
-
             </div>
+
             <div class="badges" id="badges">
                 <span class="badge_color" v-for="type in this.typesPoke" :style="{backgroundColor: type.color}">
                     {{ capitalizeFirstLetter(type.name) }}
                 </span>
             </div>
+
             <div class="about">
                 <h1>about</h1>
                 <div class="detail_poke">
@@ -507,24 +559,22 @@ export default {
                 <div class="stats_poke" v-for="stat in this.pokemon.stats">
                     <div id="card_stat" class="card_stat">
                         <div class="typology" v-if="stat.stat.name == 'hp'">
-              
-                            <h5 class="m-0" :style="{color: this.colorPage}">HP</h5>
-
+                            <span class="m-0" :style="{color: this.colorPage}"><b>HP</b></span>
                         </div>
                         <div class="typology" v-else-if="stat.stat.name == 'attack'">
-                            <h5 class="m-0" :style="{color: this.colorPage}">ATK</h5>
+                            <span class="m-0" :style="{color: this.colorPage}"><b>ATK</b></span>
                         </div>
                         <div class="typology" v-else-if="stat.stat.name == 'defense'" >
-                            <h5 class="m-0" :style="{color: this.colorPage}">DEF</h5>
+                            <span class="m-0" :style="{color: this.colorPage}"><b>DEF</b></span>
                         </div>
                         <div class="typology" v-else-if="stat.stat.name == 'special-attack'">
-                            <h5 class="m-0" :style="{color: this.colorPage}">SATK</h5>
+                            <span class="m-0" :style="{color: this.colorPage}"><b>SATK</b></span>
                         </div>
                         <div class="typology" v-else-if="stat.stat.name == 'special-defense'">
-                            <h5 class="m-0" :style="{color: this.colorPage}">SDEF</h5>
+                            <span class="m-0" :style="{color: this.colorPage}"><b>SDEF</b></span>
                         </div>
                         <div class="typology" v-else-if="stat.stat.name == 'speed'">
-                            <h5 class="m-0" :style="{color: this.colorPage}">SPD</h5>
+                            <span class="m-0" :style="{color: this.colorPage}"><b>SPD</b></span>
                         </div>
 
 
@@ -545,7 +595,7 @@ export default {
 
                 <div class="evolution_container mt-5" v-if="evolutionPoke.length > 0">
                     <h2 class="text-center text-secondary">Evolution</h2>
-                    <div class="d-flex justify-content-around align-items-center" :class="'row-cols-' + this.evolutionPoke.length">
+                    <div class="d-flex justify-content-around align-items-center row row-cols-1" :class="'row-cols-lg-' + this.evolutionPoke.length">
                         <div class="card_poke_evolution " v-for="poke in this.evolutionPoke" style="max-width: 200px; height: 220px;">
 
                                 <div class="img_pokemon" >
@@ -561,6 +611,7 @@ export default {
                     </div>
                 </div>
             </div>
+            
         </div>
 
     </div>

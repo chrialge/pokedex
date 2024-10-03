@@ -124,6 +124,8 @@ $poisom: #a040a0;
 
 #singleCardPoke {
     #header_poke {
+        max-width: 900px;
+        margin: auto;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -178,6 +180,8 @@ $poisom: #a040a0;
     }
 
     #body_info {
+        max-width: 900px;
+        margin: auto;
         background-color: white;
         padding: 100px 10px;
         transform: translateY(-80px);
@@ -454,4 +458,15 @@ p {
 
 .header_teams:hover {
     background-color: rgba(255, 255, 255, 0.217);
+}
+
+.team {
+    text-decoration: none;
+    color: white;
+    display: block;
+    padding: 5px;
+
+    &:hover {
+        background-color: rgba(255, 255, 255, 0.217);
+    }
 }

@@ -25,10 +25,9 @@ export const state = reactive({
     },
 
     filterPokemon(search) {
-        console.log(search);
         const result = this.pokemons.filter((pokemon) => pokemon.name.includes(search))
         this.pokemons = result;
-        console.log(this.pokemons)
+
     }
 })
 

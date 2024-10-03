@@ -25,7 +25,7 @@ export default {
                 // chiamo la funzione dello sate che filtra i pokemon
                 this.state.filterPokemon(this.search);
             } else {
-
+                this.state.pokemons = [];
                 // faccio una chiamata api
                 this.state.callApi();
             }
@@ -200,14 +200,14 @@ export default {
                     @keyup="searchPokemon">
             </div>
 
-            <div class="dropdown_menu" @click="this.dropdown = !this.dropdown">
+            <div class="dropdown_menu" @click="this.dropdown = !this.dropdown" style="cursor: pointer;">
                 <i class="fa-solid fa-bars"></i>
             </div>
 
         </div>
         <div class="dropdown_menu py-2" v-show="this.dropdown">
             <div class="teams">
-                <div class="header_teams d-flex justify-content-between" @click="visibleTeam()">
+                <div class="header_teams d-flex justify-content-between" @click="visibleTeam()" style="cursor: pointer;">
                     <h5 class="text-white">
                     Teams
                     <img src="../../../public/img/pokemon-trainer.png" alt="" width="20px" >
@@ -219,7 +219,7 @@ export default {
 
                 <ul class="list-unstyled ps-3" v-show="this.teamsVisible">
                     <li class="text-white" v-for="team in this.teams">
-                        <router-link :to="{ name: 'teams', params: { slug: team } }">
+                        <router-link :to="{ name: 'teams', params: { slug: team } }" class="team">
                             <img src="../../../public/img/pokeballs.png" alt="" width="20px">
                             {{ team }}
                         </router-link>
@@ -229,11 +229,7 @@ export default {
             <div class="volume d-flex align-items-center gap-1 ps-2">
                 <img id="icon_volume" src="../../../public/img/high-volume.png" alt="" width="30px" @click="iconAudio()">
                 <input id="volume_music" min="0" max="10" step="1" type="range" :onchange="getVolume()"  v-model="value"/>
-                <audio id="audio_mp3" loop
-                    src="../../../public/audio/music-sottofondo.mp3">
 
-                    <span>Il tuo browser non riesce a caricare l'audio</span>
-                </audio>
             </div>
         </div>
 
