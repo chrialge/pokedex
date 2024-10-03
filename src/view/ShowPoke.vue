@@ -60,7 +60,7 @@ export default {
                     color: "#a890f0"
                 },
                 {
-                    type: 'phychic',
+                    type: 'psychic',
                     color: "#f85888"
                 },
                 {
@@ -104,6 +104,7 @@ export default {
                     let typePoke = response.data.types[0].type.name;
                     const typespoke = response.data.types
 
+
                     axios.get(response.data.species.url)
                         .then(response =>{
 
@@ -141,6 +142,7 @@ export default {
                     });
 
                     this.pokemon = response.data;
+
 
 
                 }).catch(error => {
@@ -308,73 +310,67 @@ export default {
         },
 
         getEvolution(url){
+
+            // se il link passato non e uguale a quello salvato
             if(this.evolutionChain  != url){
 
+                let pokemonsArray = [];
+                // salvo il link dell'url
                 this.evolutionChain = url;
+
+                // chiamata axios per prendere l'albero dell'evoluzioni
                 axios.get(this.evolutionChain)
                     .then(response =>{
+
+
+                        // libero l'array
                         this.evolutionPoke = [];
+
+                        // prendo il nome dei pokemon
                         let urlPokemon = [];
 
-                        console.log(response.data.chain, this.evolutionChain)
-                        if(response.data.chain.species !== this.evolutionChain){
-                            urlPokemon.push(response.data.chain.species.name)
-                            axios.get("https://pokeapi.co/api/v2/pokemon/" + response.data.chain.species.name)
-                                .then(resp =>{
-                                    
-                                        this.evolutionPoke.push(resp.data)
-                             
+                        // pusho il pokemon base
+                        urlPokemon.push(response.data.chain.species.name)
 
-                                }).catch(error =>{
-                                    console.error(error)
-                                })
-                            if(response.data.chain.evolves_to.length>0){
-                                if(response.data.chain.evolves_to.length == 1){
-                                    urlPokemon.push(response.data.chain.evolves_to[0].species.name)
+                        // se ha una evoluzione di primo livello
+                        if(response.data.chain.evolves_to.length>0){
 
-                                    axios.get("https://pokeapi.co/api/v2/pokemon/" + response.data.chain.evolves_to[0].species.name)
-                                .then(resp =>{
-                                   
-                                        this.evolutionPoke.push(resp.data)
-                                
-
-                                }).catch(error =>{
-                                    console.error(error)
-                                })
-                                }else{
-                                    response.data.chain.evolves_to.forEach(poke =>{
-                                        urlPokemon.push(poke.species.name)
-
-                                        axios.get("https://pokeapi.co/api/v2/pokemon/" + poke.species.name)
-                                            .then(resp =>{
-  
-                                                    this.evolutionPoke.push(resp.data)
-
-
-                                            }).catch(error =>{
-                                                console.error(error)
-                                            })
-                                    }) 
-                                }
-                                
+                            // se ha una singola seconda evoluzione
+                            if(response.data.chain.evolves_to.length == 1){
+                                // pusho il nome
+                                urlPokemon.push(response.data.chain.evolves_to[0].species.name)
+                            }else{
+                                // itero per tutte le seconde evoluzioni
+                                response.data.chain.evolves_to.forEach(poke =>{
+                                    // pusho il nome
+                                    urlPokemon.push(poke.species.name)
+                                }) 
                             }
-                            
-                            if(response.data.chain.evolves_to[0].evolves_to.length > 0){
-                                urlPokemon.push(response.data.chain.evolves_to[0].evolves_to[0].species.name)
 
-                                axios.get("https://pokeapi.co/api/v2/pokemon/" + response.data.chain.evolves_to[0].evolves_to[0].species.name)
-                                .then(resp =>{
-                                    
-                                    
-                                        this.evolutionPoke.push(resp.data)
-                             
-
-                                }).catch(error =>{
-                                    console.error(error)
-                                })
-                            }
+                                                    // se ha una terza evoluzione  
+                        if(response.data.chain.evolves_to[0].evolves_to.length > 0){
+                            // pusho il nome
+                            urlPokemon.push(response.data.chain.evolves_to[0].evolves_to[0].species.name)
+                        }
                             
                         }
+
+
+                            for (let index = 0; index < urlPokemon.length; index++) {
+                                const pokemon = urlPokemon[index];
+                                
+                                axios.get("https://pokeapi.co/api/v2/pokemon/" + pokemon)
+                                    .then(resp =>{
+
+                                        this.evolutionPoke.push(resp.data);
+                                    }).catch(error =>{
+                                        console.error(error)
+                                    })
+                                
+                            }
+
+ 
+                        
                 }).catch(error =>{
                     console.error(error)
                 })
@@ -542,7 +538,7 @@ export default {
                     </div>
                     <div class="moves">
                         <div class="top">
-                            <span v-for="ability in this.pokemon.abilities">{{ ability.ability.name }}</span>
+                            <span v-for="ability in this.pokemon.abilities">{{ this.capitalizeFirstLetter(ability.ability.name.replace('-', ' ')) }}</span>
                         </div>
                         <div class="bottom">
                             <h5 class="m-0" :style="{color: this.colorPage}">Abilities</h5>
@@ -583,7 +579,7 @@ export default {
                             <div class="barra_stat">
                                 <div class="progress" :style="{backgroundColor: this.colorPage + '80'}">
                                     <div class="progress-bar" role="progressbar"
-                                        :style="{ width: stat.base_stat + '%', backgroundColor: this.colorPage }"
+                                        :style="{ width: (stat.base_stat / 3 * 2) + '%', backgroundColor: this.colorPage }"
                                         :aria-valuenow="stat.base_stat" aria-valuemin="0" aria-valuemax="100">
                                     </div>
                                 </div>
@@ -601,7 +597,7 @@ export default {
                                 <div class="img_pokemon" >
                                     <img v-if="poke.sprites.other.dream_world.front_default" height="200px" class="w-100" id="img_poke"
                                         :src="poke.sprites.other.dream_world.front_default" alt="">
-                                    <img v-else id="img_poke" :src="poke.sprites.other.home.front_default" alt="">
+                                    <img v-else id="img_poke" height="200px" class="w-100" :src="`${poke.sprites.front_default}`" alt="" >
                                 </div>
                             <div class="name text-center">
                                 <h5>{{ capitalizeFirstLetter(poke.name.replace("-", " ")) }}</h5>

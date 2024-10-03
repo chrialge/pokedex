@@ -22,6 +22,10 @@ const router = createRouter({
             name: 'teams',
             component: TeamPoke,
         },
+        {
+            path: '/teams/:patchMatch(.*)*',
+            redirect: { name: 'home' }
+        }
         // {
         //     path: '/:patchMatch(.*)*',
         //     name: 'not-found',
