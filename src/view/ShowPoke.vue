@@ -6,6 +6,7 @@ export default {
     name: 'ShowPoke',
     data() {
         return {
+            loading: true,
             base_api_url: "https://pokeapi.co/api/v2/pokemon",
             evolutionChain: '',
             pokemon: null,
@@ -93,34 +94,36 @@ export default {
     },
     methods: {
         getSinglePokemon(params) {
+            this.loading = true
+
             this.typesPoke = [];
             let url = this.base_api_url + '/' + params;
 
             axios
                 .get(url)
                 .then(response => {
-   
+
 
                     let typePoke = response.data.types[0].type.name;
                     const typespoke = response.data.types
 
 
                     axios.get(response.data.species.url)
-                        .then(response =>{
+                        .then(response => {
 
-                            
+
                             this.getEvolution(response.data.evolution_chain.url)
 
-                            response.data.flavor_text_entries.forEach((text, index) =>{
-                                if(text.language.name == 'en'){
-                                    if(index == 0){
+                            response.data.flavor_text_entries.forEach((text, index) => {
+                                if (text.language.name == 'en') {
+                                    if (index == 0) {
                                         this.description = text.flavor_text
 
                                     }
 
                                 }
                             })
-                        }).catch(error =>{
+                        }).catch(error => {
                             console.error(error)
                         })
 
@@ -132,16 +135,17 @@ export default {
                             this.colorPage = type.color;
                         }
 
-                        typespoke.forEach(typepoke=>{
+                        typespoke.forEach(typepoke => {
 
-                            if(typepoke.type.name == type.type){
-                                const formatType = {name: typepoke.type.name, color: type.color}
+                            if (typepoke.type.name == type.type) {
+                                const formatType = { name: typepoke.type.name, color: type.color }
                                 this.typesPoke.push(formatType);
                             }
                         })
                     });
 
                     this.pokemon = response.data;
+                    this.loading = false;
 
 
 
@@ -152,7 +156,7 @@ export default {
         },
         capitalizeFirstLetter(string) {
 
-           return string.charAt(0).toUpperCase() + string.slice(1);
+            return string.charAt(0).toUpperCase() + string.slice(1);
         },
         nextPokemon(id) {
             id++;
@@ -176,7 +180,7 @@ export default {
                 // salvo i teams
                 let teams = JSON.parse(localStorage.getItem('teams'));
 
-                
+
                 // salvo il valore dell'input
                 const value = document.getElementById('name_team').value;
 
@@ -185,12 +189,12 @@ export default {
 
                 let badResponse = false;
 
-                if(teams.length === 6){
+                if (teams.length === 6) {
                     badResponse = true;
-                }else{
+                } else {
 
-                // itireo nei teams
-                teams.forEach(team => {
+                    // itireo nei teams
+                    teams.forEach(team => {
                         // se il nome dell'input e uguale al valore immesso
                         if (team.name === value) {
 
@@ -212,17 +216,17 @@ export default {
                     });
                 }
 
-                
 
-                
+
+
 
                 // se il valore di teamNew
                 if (badResponse == true) {
 
-                    if(teams.length === 6){
+                    if (teams.length === 6) {
 
                         this.message = "You can't have more of six teams"
-                    }else{
+                    } else {
                         // messaggio che dice che esiste gia
                         this.message = `you cannot add pokemon, because is already on your team ${value}`
                     }
@@ -231,7 +235,7 @@ export default {
                     this.notSuccess = true;
                 } else if (teamNew === true) {
 
-                    
+
 
                     // variabile del formato del team
                     const formatTeam = { 'name': value, 'pokemon': [id] };
@@ -284,109 +288,167 @@ export default {
 
         },
 
-        number_format(numero){
+        number_format(numero) {
 
             let number = numero.toString().split('');
-            let string ='';
+            let string = '';
 
-                for (let index = 0; index < number.length; index++) {
-                    const singleNumber = number[index];
-                    if(number.length === 1){
-                        string = '0,' + singleNumber
-                    }else{
-                        if(index == number.length - 1){
-                            if(singleNumber == 0){
-                                
-                            }else{
-                                string += ',' + singleNumber 
-                            }
-                            
-                        }else{
-                            string += singleNumber;
+            for (let index = 0; index < number.length; index++) {
+                const singleNumber = number[index];
+                if (number.length === 1) {
+                    string = '0,' + singleNumber
+                } else {
+                    if (index == number.length - 1) {
+                        if (singleNumber == 0) {
+
+                        } else {
+                            string += ',' + singleNumber
                         }
+
+                    } else {
+                        string += singleNumber;
                     }
                 }
+            }
             return string
         },
 
-        getEvolution(url){
+        getEvolution(url) {
 
             // se il link passato non e uguale a quello salvato
-            if(this.evolutionChain  != url){
+            if (this.evolutionChain != url) {
 
-                let pokemonsArray = [];
+
                 // salvo il link dell'url
                 this.evolutionChain = url;
 
                 // chiamata axios per prendere l'albero dell'evoluzioni
                 axios.get(this.evolutionChain)
-                    .then(response =>{
+                    .then(response => {
 
 
                         // libero l'array
                         this.evolutionPoke = [];
 
-                        // prendo il nome dei pokemon
-                        let urlPokemon = [];
 
-                        // pusho il pokemon base
-                        urlPokemon.push(response.data.chain.species.name)
+                        axios.get('https://pokeapi.co/api/v2/pokemon/' + response.data.chain.species.name)
+                            .then(resp => {
 
-                        // se ha una evoluzione di primo livello
-                        if(response.data.chain.evolves_to.length>0){
+                                this.evolutionPoke.push(resp.data)
 
-                            // se ha una singola seconda evoluzione
-                            if(response.data.chain.evolves_to.length == 1){
-                                // pusho il nome
-                                urlPokemon.push(response.data.chain.evolves_to[0].species.name)
-                            }else{
-                                // itero per tutte le seconde evoluzioni
-                                response.data.chain.evolves_to.forEach(poke =>{
-                                    // pusho il nome
-                                    urlPokemon.push(poke.species.name)
-                                }) 
-                            }
+                                console.log(resp.data)
 
-                                                    // se ha una terza evoluzione  
-                        if(response.data.chain.evolves_to[0].evolves_to.length > 0){
-                            // pusho il nome
-                            urlPokemon.push(response.data.chain.evolves_to[0].evolves_to[0].species.name)
-                        }
-                            
-                        }
+                                // se ha una singola seconda evoluzione
+                                if (response.data.chain.evolves_to.length == 1) {
 
 
-                            for (let index = 0; index < urlPokemon.length; index++) {
-                                const pokemon = urlPokemon[index];
-                                
-                                axios.get("https://pokeapi.co/api/v2/pokemon/" + pokemon)
-                                    .then(resp =>{
+                                    axios.get('https://pokeapi.co/api/v2/pokemon/' + response.data.chain.evolves_to[0].species.name)
+                                        .then(resp => {
 
-                                        this.evolutionPoke.push(resp.data);
-                                    }).catch(error =>{
-                                        console.error(error)
+                                            this.evolutionPoke.push(resp.data)
+
+                                            // se ha una terza evoluzione  
+                                            if (response.data.chain.evolves_to[0].evolves_to.length > 0) {
+
+                                                axios.get('https://pokeapi.co/api/v2/pokemon/' + response.data.chain.evolves_to[0].evolves_to[0].species.name)
+                                                    .then(resp => {
+
+                                                        this.evolutionPoke.push(resp.data)
+
+                                                        console.log(resp.data)
+
+                                                    }).catch(error => {
+                                                        console.error(error)
+                                                    })
+                                            }
+
+                                            console.log(resp.data)
+
+                                        }).catch(error => {
+                                            console.error(error)
+                                        })
+
+                                } else {
+                                    // itero per tutte le seconde evoluzioni
+                                    response.data.chain.evolves_to.forEach(poke => {
+
+
+                                        axios.get('https://pokeapi.co/api/v2/pokemon/' + poke.species.name)
+                                            .then(resp => {
+
+                                                this.evolutionPoke.push(resp.data)
+
+                                                // se ha una terza evoluzione  
+                                                if (response.data.chain.evolves_to[0].evolves_to.length > 0) {
+
+                                                    axios.get('https://pokeapi.co/api/v2/pokemon/' + response.data.chain.evolves_to[0].evolves_to[0].species.name)
+                                                        .then(resp => {
+
+                                                            this.evolutionPoke.push(resp.data)
+
+                                                            console.log(resp.data)
+
+                                                        }).catch(error => {
+                                                            console.error(error)
+                                                        })
+                                                }
+
+                                                console.log(resp.data)
+
+                                            }).catch(error => {
+                                                console.error(error)
+                                            })
                                     })
-                                
-                            }
+                                }
 
- 
-                        
-                }).catch(error =>{
-                    console.error(error)
-                })
+                            }).catch(error => {
+                                console.error(error)
+                            })
+
+
+
+                        // for (let y = 0; y < urlPokemon.length; y++) {
+                        //     const pokemon = urlPokemon[y];
+                        //     console.log(pokemon)
+
+                        //     axios.get(pokemon)
+                        //         .then(resp => {
+
+
+                        //             console.log(resp.data)
+
+                        //         }).catch(error => {
+                        //             console.error(error)
+                        //         })
+
+
+
+
+
+
+                        // }
+
+
+
+
+
+                    }).catch(error => {
+                        console.error(error)
+                    })
             }
 
         },
 
-        returnPage(){
+        returnPage() {
             history.back()
-        }
+        },
+
 
     },
     mounted() {
 
         this.getSinglePokemon(this.$route.params.slug);
-        
+
 
 
     }
@@ -395,6 +457,14 @@ export default {
 </script>
 
 <template>
+    <template v-if="this.loading">
+        <div class="container_loading">
+            <div class="loader"></div>
+        </div>
+
+    </template>
+
+
     <div id="singleCardPoke" v-if="this.pokemon">
 
 
@@ -473,7 +543,8 @@ export default {
         <div class="header" id="header_poke">
             <div class="left_header">
 
-                    <i class="fa fa-arrow-left" aria-hidden="true" style="font-size: 25px; cursor: pointer;" @click="returnPage()"></i>
+                <i class="fa fa-arrow-left" aria-hidden="true" style="font-size: 25px; cursor: pointer;"
+                    @click="returnPage()"></i>
 
                 <h2>{{ capitalizeFirstLetter(pokemon.name.replace("-", " ")) }}</h2>
             </div>
@@ -506,7 +577,7 @@ export default {
             </div>
 
             <div class="badges" id="badges">
-                <span class="badge_color" v-for="type in this.typesPoke" :style="{backgroundColor: type.color}">
+                <span class="badge_color" v-for="type in this.typesPoke" :style="{ backgroundColor: type.color }">
                     {{ capitalizeFirstLetter(type.name) }}
                 </span>
             </div>
@@ -519,11 +590,11 @@ export default {
                             <i class="fa-solid fa-weight-hanging"></i>
                             {{ number_format(this.pokemon.weight) }} kg
 
-                            
+
 
                         </div>
                         <div class="bottom">
-                            <h5 class="m-0" :style="{color: this.colorPage}">Weight</h5>
+                            <h5 class="m-0" :style="{ color: this.colorPage }">Weight</h5>
                         </div>
 
                     </div>
@@ -533,51 +604,52 @@ export default {
                             {{ number_format(this.pokemon.height) }} M
                         </div>
                         <div class="bottom">
-                            <h5 class="m-0" :style="{color: this.colorPage}">Height</h5>
+                            <h5 class="m-0" :style="{ color: this.colorPage }">Height</h5>
                         </div>
                     </div>
                     <div class="moves">
                         <div class="top">
-                            <span v-for="ability in this.pokemon.abilities">{{ this.capitalizeFirstLetter(ability.ability.name.replace('-', ' ')) }}</span>
+                            <span v-for="ability in this.pokemon.abilities">{{
+                                this.capitalizeFirstLetter(ability.ability.name.replace('-', ' ')) }}</span>
                         </div>
                         <div class="bottom">
-                            <h5 class="m-0" :style="{color: this.colorPage}">Abilities</h5>
+                            <h5 class="m-0" :style="{ color: this.colorPage }">Abilities</h5>
                         </div>
 
                     </div>
                 </div>
                 <p class="description text-dark" style="font-size: 20px;">
-                    {{this.description.replace('', ' ')}}
+                    {{ this.description.replace('', ' ') }}
                 </p>
-                
+
 
                 <h1>Base Stasts</h1>
                 <div class="stats_poke" v-for="stat in this.pokemon.stats">
                     <div id="card_stat" class="card_stat">
                         <div class="typology" v-if="stat.stat.name == 'hp'">
-                            <span class="m-0" :style="{color: this.colorPage}"><b>HP</b></span>
+                            <span class="m-0" :style="{ color: this.colorPage }"><b>HP</b></span>
                         </div>
                         <div class="typology" v-else-if="stat.stat.name == 'attack'">
-                            <span class="m-0" :style="{color: this.colorPage}"><b>ATK</b></span>
+                            <span class="m-0" :style="{ color: this.colorPage }"><b>ATK</b></span>
                         </div>
-                        <div class="typology" v-else-if="stat.stat.name == 'defense'" >
-                            <span class="m-0" :style="{color: this.colorPage}"><b>DEF</b></span>
+                        <div class="typology" v-else-if="stat.stat.name == 'defense'">
+                            <span class="m-0" :style="{ color: this.colorPage }"><b>DEF</b></span>
                         </div>
                         <div class="typology" v-else-if="stat.stat.name == 'special-attack'">
-                            <span class="m-0" :style="{color: this.colorPage}"><b>SATK</b></span>
+                            <span class="m-0" :style="{ color: this.colorPage }"><b>SATK</b></span>
                         </div>
                         <div class="typology" v-else-if="stat.stat.name == 'special-defense'">
-                            <span class="m-0" :style="{color: this.colorPage}"><b>SDEF</b></span>
+                            <span class="m-0" :style="{ color: this.colorPage }"><b>SDEF</b></span>
                         </div>
                         <div class="typology" v-else-if="stat.stat.name == 'speed'">
-                            <span class="m-0" :style="{color: this.colorPage}"><b>SPD</b></span>
+                            <span class="m-0" :style="{ color: this.colorPage }"><b>SPD</b></span>
                         </div>
 
 
                         <div class="stat">
                             <div class="number_stat">{{ stat.base_stat }}</div>
                             <div class="barra_stat">
-                                <div class="progress" :style="{backgroundColor: this.colorPage + '80'}">
+                                <div class="progress" :style="{ backgroundColor: this.colorPage + '80' }">
                                     <div class="progress-bar" role="progressbar"
                                         :style="{ width: (stat.base_stat / 3 * 2) + '%', backgroundColor: this.colorPage }"
                                         :aria-valuenow="stat.base_stat" aria-valuemin="0" aria-valuemax="100">
@@ -591,23 +663,26 @@ export default {
 
                 <div class="evolution_container mt-5" v-if="evolutionPoke.length > 0">
                     <h2 class="text-center text-secondary">Evolution</h2>
-                    <div class="d-flex justify-content-around align-items-center row row-cols-1" :class="'row-cols-lg-' + this.evolutionPoke.length">
-                        <div class="card_poke_evolution " v-for="poke in this.evolutionPoke" style="max-width: 200px; height: 220px;">
+                    <div class="d-flex justify-content-around align-items-center row row-cols-1"
+                        :class="'row-cols-lg-' + this.evolutionPoke.length">
+                        <div class="card_poke_evolution " v-for="poke in this.evolutionPoke"
+                            style="max-width: 200px; height: 220px;">
 
-                                <div class="img_pokemon" >
-                                    <img v-if="poke.sprites.other.dream_world.front_default" height="200px" class="w-100" id="img_poke"
-                                        :src="poke.sprites.other.dream_world.front_default" alt="">
-                                    <img v-else id="img_poke" height="200px" class="w-100" :src="`${poke.sprites.front_default}`" alt="" >
-                                </div>
+                            <div class="img_pokemon">
+                                <img v-if="!poke.sprites.other.dream_world.front_default" height="200px" class="w-100"
+                                    id="img_poke" :src="`${poke.sprites.front_default}`" alt="">
+                                <img v-else id="img_poke" height="200px" class="w-100"
+                                    :src="poke.sprites.other.dream_world.front_default" alt="">
+                            </div>
                             <div class="name text-center">
                                 <h5>{{ capitalizeFirstLetter(poke.name.replace("-", " ")) }}</h5>
                             </div>
-                        
+
                         </div>
                     </div>
                 </div>
             </div>
-            
+
         </div>
 
     </div>

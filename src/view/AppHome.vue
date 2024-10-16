@@ -13,13 +13,14 @@ export default {
         HeaderApp,
         MainApp,
     },
-    mounted(){
+    mounted() {
         document.getElementById('app').style.backgroundColor = '#c32f27';
     }
 }
 </script>
 
 <template>
+
 
     <HeaderApp />
     <MainApp />
