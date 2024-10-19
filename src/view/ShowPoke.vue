@@ -105,6 +105,7 @@ export default {
             this.typesPoke = [];
             let url = this.base_api_url + '/' + params;
 
+
             axios
                 .get(url)
                 .then(response => {
@@ -113,26 +114,6 @@ export default {
                     let typePoke = response.data.types[0].type.name;
                     const typespoke = response.data.types
                     console.log(response.data)
-
-
-                    axios.get(response.data.species.url)
-                        .then(response => {
-
-
-                            this.getEvolution(response.data.evolution_chain.url)
-
-                            response.data.flavor_text_entries.forEach((text, index) => {
-                                if (text.language.name == 'en') {
-                                    if (index == 0) {
-                                        this.description = text.flavor_text
-
-                                    }
-
-                                }
-                            })
-                        }).catch(error => {
-                            console.error(error)
-                        })
 
 
                     this.types.forEach(type => {
@@ -151,8 +132,39 @@ export default {
                         })
                     });
 
+
+                    axios.get(response.data.species.url)
+                        .then(response => {
+
+
+                            this.getEvolution(response.data.evolution_chain.url)
+
+
+                            response.data.flavor_text_entries.forEach((text, index) => {
+                                if (text.language.name == 'en') {
+                                    if (index == 0) {
+                                        this.description = text.flavor_text
+
+                                    }
+
+                                }
+                            })
+
+
+                            if (this.evolutionChain == response.data.evolution_chain.url) {
+                                this.loading = false;
+                            }
+                        }).catch(error => {
+                            console.error(error)
+                        })
+
+
+
+
                     this.pokemon = response.data;
-                    this.loading = false;
+
+
+
 
 
 
@@ -414,30 +426,7 @@ export default {
 
 
 
-                        // for (let y = 0; y < urlPokemon.length; y++) {
-                        //     const pokemon = urlPokemon[y];
-                        //     console.log(pokemon)
-
-                        //     axios.get(pokemon)
-                        //         .then(resp => {
-
-
-                        //             console.log(resp.data)
-
-                        //         }).catch(error => {
-                        //             console.error(error)
-                        //         })
-
-
-
-
-
-
-                        // }
-
-
-
-
+                        this.loading = false;
 
                     }).catch(error => {
                         console.error(error)
@@ -450,9 +439,6 @@ export default {
     mounted() {
 
         this.getSinglePokemon(this.$route.params.slug);
-
-
-
     }
 
 }
