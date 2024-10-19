@@ -14,98 +14,132 @@ export const state = reactive({
     loading: false,
 
 
-
+    /**
+     * funzione che ha lo scopo di trovere entro un limite i pokemon
+     * @param {string} url url per la chiamata api
+     */
     callApi(url) {
+
+        // svuoto l'array dove contengono i pokemon
         this.pokemons = []
+
+        // fase di caricamento true
         this.loading = true;
+
+        // request con axios
         axios.get(url).then((response) => {
-            console.log(response);
 
-
+            // salvo il link per la pagina prossima
             this.next = response.data.next;
+
+            // salvo il link per la pagina precedente
             this.prev = response.data.previous;
 
+            // se ci sono piu di 50 pokemon e se ancora non e stato modificato il contPage
             if (response.data.count > 50 && this.countPage === 0) {
+
+                // salvo il numero di pagine
                 this.countPage = Math.ceil(response.data.count / 50);
-                console.log(this.countPage)
             }
 
-            for (let index = 0; index < response.data.results.length; index++) {
-                const urlPokemon = response.data.results[index].url;
+            // salvo tutte le risposte
+            const responsePoke = response.data.results
 
-                axios.get(urlPokemon).then((resp) => {
+            // inizializzo una variabile
+            let pokemonsUrl = [];
 
-                    this.pokemons.push(resp.data)
+            // itero per tutte le risposte
+            for (let index = 0; index < responsePoke.length; index++) {
 
+                // variabile dove contiene la singola risposta
+                const element = responsePoke[index];
+
+                // pusho le promise
+                pokemonsUrl.push(axios(element.url))
+
+            }
+
+            // quando tutte le promise si sono risolte
+            Promise.all(pokemonsUrl).then((pokemons) => {
+
+                // itero tra le request
+                pokemons.forEach(pokemon => {
+
+                    // pusho i pokemon
+                    this.pokemons.push(pokemon.data)
                 })
+            });
 
-            }
-
+            // la fase di caricamento e finito
             this.loading = false;
         }).catch(err => {
+
+            // in console se ce un errore me lo mostra
             console.error(err)
         })
     },
 
+    /**
+     * funzione che filtra i pokemon che contengono la parola dell'input
+     * @param {string} search stringa dell'input di cerca
+     */
     filterPokemon(search) {
 
+        // fase di caricamento true
+        this.loading = true;
 
+        // cambio il valore dell apggina seguente
+        this.next = null;
 
+        // cambio il valore della pagina precedente
+        this.prev = null;
 
-
-
-
+        // faccio una richiesta che mi da tutti i pokemon
         axios.get('https://pokeapi.co/api/v2/pokemon?limit=1302').then((response) => {
-            console.log(response);
 
+            // svuto l'array dei pokemon
             this.pokemons = []
-            this.next = response.data.next;
-            this.prev = response.data.previous;
 
-            if (response.data.count > 50 && this.countPage === 0) {
-                this.countPage = Math.ceil(response.data.count / 50);
-                console.log(this.countPage)
-            }
+            // salvo i risultati
+            const results = response.data.results
 
+            // itero tra i risultati
+            for (let index = 0; index < results.length; index++) {
 
-            console.log(response)
-            let count = 0
+                // salvo il risultato singolo
+                const result = results[index];
 
+                // salvo l'url del singolo risultato
+                const urlPokemon = result.url;
 
+                // salvo il nome del singolo risultato
+                const namePokemon = result.name;
 
-            while (this.pokemons.length <= 50) {
+                // se il nome contiene il valore dell'input
+                if (namePokemon.includes(search.trim().replace(' ', '-'))) {
 
-                const urlPokemon = response.data.results[count].url;
-                const namePokemon = response.data.results[count].name;
-
-
-                if (namePokemon.includes(search)) {
+                    // chiamata api del singolo pokemon
                     axios.get(urlPokemon).then((resp) => {
 
+                        // deve essere uno dei pokemon tra 1 e 1302
                         if (resp.data.id <= 1302) {
+
+                            // pusho il pokemon
                             this.pokemons.push(resp.data)
-                            console.log(resp.data)
                         }
-
-
-
+                    }).catch(err => {
+                        console.error(err);
                     })
                 }
-                count++
             }
 
-
-            console.log(this.pokemons)
-
-
+            // la fase di caricamento e finito
+            this.loading = false;
+        }).catch(error => {
+            console.error(error)
         })
 
+    },
 
-
-
-        // console.log(result)
-        // this.pokemons = result;
-
-    }
 })
 

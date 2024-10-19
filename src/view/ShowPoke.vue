@@ -1,11 +1,13 @@
 <script>
 import axios from 'axios';
+import { state } from '../state.js';
 
 
 export default {
     name: 'ShowPoke',
     data() {
         return {
+            state,
             loading: true,
             base_api_url: "https://pokeapi.co/api/v2/pokemon",
             evolutionChain: '',
@@ -88,6 +90,10 @@ export default {
                     type: 'steel',
                     color: "#b8b8d0"
                 },
+                {
+                    type: 'fairy',
+                    color: "#fb6f92"
+                },
             ],
 
         }
@@ -106,6 +112,7 @@ export default {
 
                     let typePoke = response.data.types[0].type.name;
                     const typespoke = response.data.types
+                    console.log(response.data)
 
 
                     axios.get(response.data.species.url)
@@ -439,11 +446,6 @@ export default {
 
         },
 
-        returnPage() {
-            history.back()
-        },
-
-
     },
     mounted() {
 
@@ -542,9 +544,10 @@ export default {
 
         <div class="header" id="header_poke">
             <div class="left_header">
+                <router-link :to="{ name: 'home' }" @click="this.state.page = 1">
+                    <i class="fa fa-arrow-left" aria-hidden="true" style="font-size: 25px; cursor: pointer;"></i>
+                </router-link>
 
-                <i class="fa fa-arrow-left" aria-hidden="true" style="font-size: 25px; cursor: pointer;"
-                    @click="returnPage()"></i>
 
                 <h2>{{ capitalizeFirstLetter(pokemon.name.replace("-", " ")) }}</h2>
             </div>
@@ -563,6 +566,7 @@ export default {
                 v-if="this.pokemon.id > 1"></i>
             <img v-if="pokemon.sprites.other.dream_world.front_default" id="img_poke"
                 :src="pokemon.sprites.other.dream_world.front_default" alt="">
+            <img v-else :src="pokemon.sprites.front_default" alt="">
 
             <i class="fa fa-chevron-right" aria-hidden="true" @click="nextPokemon(this.pokemon.id)"></i>
         </div>
