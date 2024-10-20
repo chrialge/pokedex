@@ -12,99 +12,154 @@ export default {
             modalCalcelPokemon: false,
         }
     },
+    components: {
+        HeaderApp,
+
+    },
     methods: {
+
+        /**
+         * funzione che mi da i pokemon del team 
+         * @param name nome del team
+         */
+
         getTeam(name) {
+
+            // se esiste l'oggetto team in localstorage
             if (localStorage.getItem('teams')) {
 
-                // prende i dati salvati in tem
+                // prende i dati salvati in team
                 const teams = JSON.parse(localStorage.getItem('teams'));
 
-                console.log(teams)
-
+                // itero per tutti iteam
                 teams.forEach(team => {
+
+                    // se il nome del team e uguale al parametro passato
                     if (team.name == name) {
-                        this.pokemonId = team.pokemon
-                        console.log(this.pokemonId)
+
+                        // salvo gli id del pokemon
+                        this.pokemonId = team.pokemon;
+
+                        // itero per tutti gli id dei pokemon
                         this.pokemonId.forEach(id => {
-                            console.log(id)
+
+                            // chiamata api per ogni iterazione
                             axios.get("https://pokeapi.co/api/v2/pokemon/" + id)
                                 .then(response => {
-                                    console.log(response.data)
-                                    this.pokemons.push(response.data)
+
+                                    // pusho la risposta
+                                    this.pokemons.push(response.data);
                                 }).catch(error => {
-                                    console.error(error)
+                                    console.error(error);
                                 })
                         })
                     }
                 });
             }
         },
-        capitalizeFirstLetter(string) {
 
+        /**
+         * funzione che ritorna una stringa con la prima lettera in maiuscolo
+         * @param string 
+         */
+
+        capitalizeFirstLetter(string) {
             return string.charAt(0).toUpperCase() + string.slice(1);
         },
-        returnPage() {
-            history.back()
-        },
-        deleteTeam() {
-            const name = this.$route.params.slug
 
+        /**
+         * funzione per ritornare indietro
+         */
+        returnPage() {
+
+            history.back();
+        },
+
+        /**
+         * funzione che cancella il team
+         */
+        deleteTeam() {
+
+            // salvo il nome del team
+            const name = this.$route.params.slug;
+
+            // se esiste l'oggetto teams in local storage
             if (localStorage.getItem('teams')) {
 
                 // prende i dati salvati in tem
                 const teams = JSON.parse(localStorage.getItem('teams'));
 
-                console.log(teams)
-
+                // filtro teams
                 const result = teams.filter(team => {
-                    if (team.name === name) {
 
-                    } else {
-                        return team
+                    // se il nome del team e diverso da quello corrente
+                    if (team.name !== name) {
+                        return team;
                     }
                 })
-                localStorage.setItem('teams', JSON.stringify(result))
 
+                // setto l'oggetto teams con i team filtrati
+                localStorage.setItem('teams', JSON.stringify(result));
 
+                // modale di cancellazione team
                 this.modalCancelTeam = false;
-                location.reload()
-                console.log(result)
+
+                // ricarica la pagina
+                location.reload();
             }
         },
+        /**
+         * funzione che cancella il pokemon dal team
+         * @param id del pokemon
+         */
         deletePokemon(id) {
-            console.log(id)
-            const name = this.$route.params.slug
 
+            // salvo il nome del pokemon
+            const name = this.$route.params.slug;
+
+            // inizializzo una variabile
             let idPokemons = [];
+
             // prende i dati salvati in tem
             const teams = JSON.parse(localStorage.getItem('teams'));
 
-            console.log(teams)
-
+            // mappo i team
             teams.map(team => {
+
+                // se il nome del team e uguale da quello corrente
                 if (team.name === name) {
+
+                    // filtro i pokemon
                     idPokemons = team.pokemon.filter(idPoke => {
+
+                        // se l'id del pokemon e diverso da quello passato
                         if (idPoke != id) {
-                            return idPoke
+                            return idPoke;
                         }
                     })
-                    return team.pokemon = idPokemons
-                }
-                return team
-            })
-            localStorage.setItem('teams', JSON.stringify(teams))
-            this.modalCalcelPokemon = false
-            location.reload()
 
-            console.log(idPokemons, teams)
+                    // setto i pokemon del team
+                    return team.pokemon = idPokemons;
+                }
+
+                return team;
+            })
+
+            // setto l'oggetto teams con i team filtrati
+            localStorage.setItem('teams', JSON.stringify(teams));
+
+            // modale di cancellazione team
+            this.modalCalcelPokemon = false;
+
+            // ricarica la pagina
+            location.reload();
         }
     },
-    components: {
-        HeaderApp,
 
-    },
     mounted() {
         document.getElementById('app').style.backgroundColor = '#c32f27';
+
+        // invoco la funzione passando il parametro del team
         this.getTeam(this.$route.params.slug);
     }
 }
@@ -114,6 +169,8 @@ export default {
 
 
     <HeaderApp />
+
+
     <main id="site_main">
 
         <!-- modale per la cancellazione del team -->

@@ -141,12 +141,24 @@ export default {
             }
         },
 
+        /**
+         * funzione per quando clicco sul bottone per mostare i team
+         */
         visibleTeam() {
+
+            // se i team non sono visibile
             if (this.teamsVisible === false) {
+
+                // team diventono visibili
                 this.teamsVisible = true;
+
+                // modifico l'attributo src di more_info
                 document.getElementById('more_info').setAttribute('src', '../../../public/img/minus-sign.png');
             } else {
+                // team diventano invisibili
                 this.teamsVisible = false;
+
+                // modifico l'attributo src di more_info
                 document.getElementById('more_info').setAttribute('src', '../../../public/img/square.png');
             }
         }
@@ -166,6 +178,7 @@ export default {
         // prendo l'elemento audio 
         const audioEl = document.getElementById('audio_mp3').play();
 
+        // se non esiste
         if (audioEl !== undefined) {
             audioEl.then(_ => {
                 // Autoplay started!
@@ -175,10 +188,6 @@ export default {
         }
 
 
-        function playAudio() {
-            audioEl.play();
-        }
-
         // do come valore di loop dell'elemen=nto audio true
         audioEl.loop = true;
     }
@@ -187,26 +196,39 @@ export default {
 </script>
 
 <template>
+
+    <!-- header -->
     <header id="site_header">
+
+        <!-- titolo + logo -->
         <div class="title">
             <img src="../../../public/img/pokeball.png" alt="">
             <h1>
                 Pokedex
             </h1>
         </div>
+
+        <!-- rigth del header -->
         <div class="right_navbar">
+
+            <!-- searchbox -->
             <div class="searchbar">
                 <i class="fa-solid fa-magnifying-glass"></i>
                 <input type="search" name="search" id="search" placeholder="Cerca..." v-model="search"
                     @keyup="searchPokemon">
             </div>
 
+            <!-- bottone per la finestrella di dropdown -->
             <div class="dropdown_menu" @click="this.dropdown = !this.dropdown" style="cursor: pointer;">
                 <i class="fa-solid fa-bars"></i>
             </div>
 
         </div>
+
+        <!-- dropmenu -->
         <div class="dropdown_menu py-2" v-show="this.dropdown">
+
+            <!-- teams -->
             <div class="teams">
                 <div class="header_teams d-flex justify-content-between" @click="visibleTeam()"
                     style="cursor: pointer;">
@@ -219,7 +241,10 @@ export default {
                     </div>
                 </div>
 
+                <!-- se esistono i team -->
                 <ul class="list-unstyled ps-3" v-show="this.teamsVisible">
+
+                    <!-- itero per tutti i team esistenti -->
                     <li class="text-white" v-for="team in this.teams">
                         <router-link :to="{ name: 'teams', params: { slug: team } }" class="team">
                             <img src="../../../public/img/pokeballs.png" alt="" width="20px">
@@ -228,6 +253,8 @@ export default {
                     </li>
                 </ul>
             </div>
+
+            <!-- input rage per il volume della musica -->
             <div class="volume d-flex align-items-center gap-1 ps-2">
                 <img id="icon_volume" src="../../../public/img/high-volume.png" alt="" width="30px"
                     @click="iconAudio()">

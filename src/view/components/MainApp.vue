@@ -146,11 +146,20 @@ export default {
     },
     mounted() {
 
-        // faccio la chiamata api che mi da i risultati per la prima pagina
-        this.state.callApi(this.state.url);
+        // se la pagina e maggiore di uno
+        if (this.state.page > 1) {
 
-        // invoco la funzione per il paginate della prima pagina
-        this.getPage(1)
+            // invoco la funzione e passo la pagina corrente
+            this.goToPage(this.state.page)
+        } else {
+            // faccio la chiamata api che mi da i risultati per la prima pagina
+            this.state.callApi(this.state.url);
+
+            // invoco la funzione per il paginate della prima pagina
+            this.getPage(1)
+        }
+
+
     }
 
 }

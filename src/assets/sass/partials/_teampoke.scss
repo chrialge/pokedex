@@ -1,0 +1,36 @@
+.header_teams {
+    padding: 5px 10px;
+}
+
+.header_teams:hover {
+    background-color: rgba(255, 255, 255, 0.217);
+}
+
+.team {
+    text-decoration: none;
+    color: white;
+    display: block;
+    padding: 5px;
+
+    &:hover {
+        background-color: rgba(255, 255, 255, 0.217);
+    }
+}
+
+.modal_cancel_team {
+    position: fixed;
+    z-index: 9999;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.477);
+    padding: 0px 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .card {
+        max-width: 400px;
+    }
+}

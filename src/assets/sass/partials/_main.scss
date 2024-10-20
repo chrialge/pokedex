@@ -1,0 +1,112 @@
+#site_main {
+    .container_main {
+        background-color: white;
+        border-radius: 10px;
+        text-align: center;
+        padding-top: 20px;
+    }
+    .container_pokemon {
+        background-color: white;
+        min-height: 90vh;
+        border-radius: 10px;
+        padding: 30px 15px;
+
+        .row_pokemon {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            text-decoration: none;
+
+            .card > a {
+                height: 200px;
+                border-radius: 10px;
+                position: relative;
+                box-shadow: 1px 1px 5px black;
+                align-content: center;
+                justify-content: center;
+                display: flex;
+                background: linear-gradient(
+                    to bottom,
+                    white 0%,
+                    white 60%,
+                    #eaeaea 60%,
+                    #eaeaea 100%
+                );
+                padding: 5px;
+                .number_pokemon {
+                    position: absolute;
+                    right: 5px;
+                    color: gray;
+                }
+
+                .img_pokemon {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 130px;
+                    & > img {
+                        width: 90%;
+                        height: 90%;
+                    }
+                }
+
+                .name_pokemon {
+                    position: absolute;
+                    bottom: 0;
+                    display: block;
+                    width: 100%;
+                    text-align: center;
+                }
+            }
+        }
+
+        .container_paginate {
+            justify-content: flex-end;
+            margin-top: 50px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+
+            .button_prev_page,
+            .button_next_page {
+                width: 33px;
+                font-size: 20px;
+                aspect-ratio: 1;
+                background-color: #c32f27;
+                color: white;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+
+                &:hover {
+                    transition: all 0.3s ease-in-out;
+                    background-color: #9a2720;
+                }
+            }
+
+            .pages_less_than_four {
+                display: flex;
+                gap: 5px;
+
+                .page {
+                    padding: 5px 12px;
+                    border-radius: 50%;
+                    background-color: #c32f27;
+                    color: white;
+                    cursor: pointer;
+
+                    &:hover {
+                        transition: all 0.3s ease-in-out;
+                        background-color: #9a2720;
+                    }
+                }
+                .active_page {
+                    background-color: orange;
+                }
+            }
+        }
+    }
+}

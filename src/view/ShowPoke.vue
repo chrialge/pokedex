@@ -99,98 +99,155 @@ export default {
         }
     },
     methods: {
+        /**
+         * funzione che mi rida il pokemon con tutti i suoi dati
+         * @param params l'id del pokemon
+         */
         getSinglePokemon(params) {
+
+            // stato di caricamento true
             this.loading = true
 
+            // svuoto le tipologie dei pokemon
             this.typesPoke = [];
+
+
+
+            // setto per formare l'url
             let url = this.base_api_url + '/' + params;
 
-
-            axios
-                .get(url)
+            // chiamata api
+            axios.get(url)
                 .then(response => {
 
-
+                    // setto come tipologia del pokemon la prima tipologia
                     let typePoke = response.data.types[0].type.name;
+
+                    // prendo tutte le tipologie del pokemon
                     const typespoke = response.data.types
-                    console.log(response.data)
 
+                    // setto il pokemon con la risposta
+                    this.pokemon = response.data;
 
+                    // itero per tutte le tipologie
                     this.types.forEach(type => {
 
+                        // se la tipologia e uguale a quella del pokemon
                         if (type.type === typePoke) {
+
+                            // setto il colore della tipologia
                             document.getElementById('app').style.backgroundColor = type.color
+
+                            // setto il colore della pagina
                             this.colorPage = type.color;
                         }
 
+                        // itero per tutte le tipologie del pokemon
                         typespoke.forEach(typepoke => {
 
+                            // se la tipologia del pokemon e uguale a quella dellla tipologia della iterazione
                             if (typepoke.type.name == type.type) {
+
+                                // setto un oggetto
                                 const formatType = { name: typepoke.type.name, color: type.color }
+
+                                // pusho l'oggetto
                                 this.typesPoke.push(formatType);
                             }
                         })
                     });
 
-
+                    // chiamata api 
                     axios.get(response.data.species.url)
                         .then(response => {
 
-
+                            // invoco la funzione per prendere l'evoluzioni
                             this.getEvolution(response.data.evolution_chain.url)
 
-
+                            // itero per le varie descrizioni del pokemon
                             response.data.flavor_text_entries.forEach((text, index) => {
-                                if (text.language.name == 'en') {
-                                    if (index == 0) {
-                                        this.description = text.flavor_text
 
+                                // se la lingua della descrizione e inglese
+                                if (text.language.name == 'en') {
+
+                                    // se e il primo ciclo
+                                    if (index == 0) {
+
+                                        // setto la descrizione
+                                        this.description = text.flavor_text
                                     }
 
                                 }
                             })
 
-
+                            // se l'url della evoluzione salvata e uguale a quella della chiamata
                             if (this.evolutionChain == response.data.evolution_chain.url) {
+
+                                // stato di caricaemnto falso
                                 this.loading = false;
                             }
                         }).catch(error => {
                             console.error(error)
                         })
 
-
-
-
-                    this.pokemon = response.data;
-
-
-
-
-
-
                 }).catch(error => {
                     console.error(error);
                 })
 
         },
-        capitalizeFirstLetter(string) {
 
+        /**
+         * funzione che ritorna una stringa con la prima lettera in maiuscolo
+         * @param string 
+         */
+        capitalizeFirstLetter(string) {
             return string.charAt(0).toUpperCase() + string.slice(1);
         },
+
+        /**
+         * funzione che mida il pokemon seguente
+         * @param id del pokemon corrente 
+         */
         nextPokemon(id) {
+
+            // aumento di uno l'id
             id++;
+
+            // invoco la funzione che mi da il pokemon e i suoi dati
             this.getSinglePokemon(id);
         },
+
+        /**
+         * funzione che mida il pokemon precedente
+         * @param id del pokemon corrente
+         */
         prevPokemon(id) {
+
+            // diminuisco di uno l'id
             id--;
+
+            // invoco la funzione chi da il pokemon con i suoi dati
             this.getSinglePokemon(id);
         },
+
+        /**
+         * funzione per chiudere la modale
+         */
         closeModal() {
             this.activeModal = false;
         },
+
+        /**
+         * funzione per mostare le modale
+         */
         openModal() {
             this.activeModal = true;
         },
+
+        /**
+         * funzione che mi aggiunge il pokemon al team
+         * @param id del pokemon
+         */
         addPokemon(id) {
 
             // se esiste il team nel local storage
@@ -206,9 +263,13 @@ export default {
                 // variabile di ancoraggio
                 let teamNew = true;
 
+                // variabile di non riuscita
                 let badResponse = false;
 
+                // se esitono 6 team
                 if (teams.length === 6) {
+
+                    // non riuscita = true
                     badResponse = true;
                 } else {
 
@@ -227,34 +288,30 @@ export default {
                                 team.pokemon.push(id)
                             } else {
 
+                                // non riuscita = true
                                 badResponse = true;
-
                             }
-
                         }
                     });
                 }
 
-
-
-
-
-                // se il valore di teamNew
+                // se  la non riuscita e true
                 if (badResponse == true) {
 
+                    // se ci sono 6 team
                     if (teams.length === 6) {
 
+                        // messaggio di risposta 
                         this.message = "You can't have more of six teams"
                     } else {
-                        // messaggio che dice che esiste gia
+
+                        // messaggio che dice che esiste gia il pokemon
                         this.message = `you cannot add pokemon, because is already on your team ${value}`
                     }
 
-
+                    // setto il non successo true
                     this.notSuccess = true;
                 } else if (teamNew === true) {
-
-
 
                     // variabile del formato del team
                     const formatTeam = { 'name': value, 'pokemon': [id] };
@@ -265,7 +322,9 @@ export default {
                     // messaggio di creazione di un nuovo team
                     this.message = `New Team ${formatTeam.name} has been created successfully.`
 
+                    // setto il successo con true
                     this.succefull = true;
+
                     // set team con le nuove modifiche fatte a team
                     localStorage.setItem('teams', JSON.stringify(teams));
 
@@ -275,13 +334,14 @@ export default {
                     // messaggio per aver aggiunto il pokemon
                     this.message = `Congratulations, your team member has been successfully added!`
 
-
+                    // setto il successo con true
                     this.succefull = true;
+
                     // set team con le nuove modifiche fatte a team
                     localStorage.setItem('teams', JSON.stringify(teams));
                 }
 
-
+                // chiudo la modale
                 this.closeModal()
 
             } else {
@@ -297,41 +357,66 @@ export default {
                     // messaggio di creazione
                     this.message = `New Team ${team[0].name} has been created successfully.`
 
+                    // setto il successo con true
                     this.succefull = true;
 
-
+                    // setto il successo con true
                     this.closeModal()
                 }
             }
-
-
         },
 
+        /**
+         * funzione che formata il numero
+         * @param numero 
+         * return di una stringa del numero formato
+         */
         number_format(numero) {
 
+            // splitto il numero
             let number = numero.toString().split('');
+
+            // inizializzo una variabile
             let string = '';
 
+            // itero per tutti i sinole cifre del numero
             for (let index = 0; index < number.length; index++) {
+
+                // singola cifra
                 const singleNumber = number[index];
+
+                // se ha una singola cifra
                 if (number.length === 1) {
+
+                    // setto la stringa
                     string = '0,' + singleNumber
                 } else {
+
+                    // prendo l'ultima cifra
                     if (index == number.length - 1) {
+
+                        // se e uguale a zero
                         if (singleNumber == 0) {
 
                         } else {
+                            // setto la parte decimale
                             string += ',' + singleNumber
                         }
 
                     } else {
+                        // aggiungo i numeri
                         string += singleNumber;
                     }
                 }
             }
+            // ritorna il numero formato
             return string
         },
 
+        /**
+         * funzione che mi da tutte l'evoluzione
+         * @param url 
+         */
         getEvolution(url) {
 
             // se il link passato non e uguale a quello salvato
@@ -349,71 +434,67 @@ export default {
                         // libero l'array
                         this.evolutionPoke = [];
 
+                        // chiamata per il poikemon base
 
                         axios.get('https://pokeapi.co/api/v2/pokemon/' + response.data.chain.species.name)
                             .then(resp => {
 
+                                // pusho la risposta 
                                 this.evolutionPoke.push(resp.data)
 
-                                console.log(resp.data)
-
-                                // se ha una singola seconda evoluzione
+                                // se ha una singola prima evoluzione
                                 if (response.data.chain.evolves_to.length == 1) {
 
-
+                                    // chiamata per la prima evoluzaione
                                     axios.get('https://pokeapi.co/api/v2/pokemon/' + response.data.chain.evolves_to[0].species.name)
                                         .then(resp => {
 
+                                            // pusho la risposta
                                             this.evolutionPoke.push(resp.data)
 
-                                            // se ha una terza evoluzione  
+                                            // se ha una seconda evoluzione  
                                             if (response.data.chain.evolves_to[0].evolves_to.length > 0) {
 
+                                                // chamata api per la seconda evoluzione
                                                 axios.get('https://pokeapi.co/api/v2/pokemon/' + response.data.chain.evolves_to[0].evolves_to[0].species.name)
                                                     .then(resp => {
 
+                                                        // pusho la risposta
                                                         this.evolutionPoke.push(resp.data)
-
-                                                        console.log(resp.data)
-
                                                     }).catch(error => {
                                                         console.error(error)
                                                     })
                                             }
-
-                                            console.log(resp.data)
-
                                         }).catch(error => {
                                             console.error(error)
                                         })
 
                                 } else {
-                                    // itero per tutte le seconde evoluzioni
+
+                                    // itero per tutte le prime evoluzioni
                                     response.data.chain.evolves_to.forEach(poke => {
 
-
+                                        // chamate per le diverse prime evoluzioni
                                         axios.get('https://pokeapi.co/api/v2/pokemon/' + poke.species.name)
                                             .then(resp => {
 
+                                                // pusho la risposta
                                                 this.evolutionPoke.push(resp.data)
 
-                                                // se ha una terza evoluzione  
+                                                // se ha una seconda evoluzione  
                                                 if (response.data.chain.evolves_to[0].evolves_to.length > 0) {
 
+                                                    // chiamata api per la seconda evoluzione
                                                     axios.get('https://pokeapi.co/api/v2/pokemon/' + response.data.chain.evolves_to[0].evolves_to[0].species.name)
                                                         .then(resp => {
 
+                                                            // pusho la risposta
                                                             this.evolutionPoke.push(resp.data)
-
-                                                            console.log(resp.data)
 
                                                         }).catch(error => {
                                                             console.error(error)
                                                         })
                                                 }
-
-                                                console.log(resp.data)
-
                                             }).catch(error => {
                                                 console.error(error)
                                             })
@@ -424,8 +505,7 @@ export default {
                                 console.error(error)
                             })
 
-
-
+                        // stato di caricamento falso
                         this.loading = false;
 
                     }).catch(error => {
@@ -435,9 +515,18 @@ export default {
 
         },
 
+        /**
+         * funzione per ritornare indietro
+         */
+        returnPage() {
+
+            history.back()
+        }
+
     },
     mounted() {
 
+        // invoco la funzione passando il parameto della rotta
         this.getSinglePokemon(this.$route.params.slug);
     }
 
@@ -445,14 +534,16 @@ export default {
 </script>
 
 <template>
+
+    <!-- in fase di caricamento -->
     <template v-if="this.loading">
         <div class="container_loading">
             <div class="loader"></div>
         </div>
-
     </template>
 
 
+    <!-- app -->
     <div id="singleCardPoke" v-if="this.pokemon">
 
 
@@ -528,16 +619,26 @@ export default {
             </div>
         </div>
 
+        <!-- header -->
         <div class="header" id="header_poke">
+
+            <!-- left header -->
             <div class="left_header">
-                <router-link :to="{ name: 'home' }" @click="this.state.page = 1">
-                    <i class="fa fa-arrow-left" aria-hidden="true" style="font-size: 25px; cursor: pointer;"></i>
-                </router-link>
+
+                <!-- bottone che mi riporta alla pagina home -->
+
+                <i class="fa fa-arrow-left" aria-hidden="true" style="font-size: 25px; cursor: pointer;"
+                    @click="returnPage()"></i>
 
 
+                <!-- nome del pokemon -->
                 <h2>{{ capitalizeFirstLetter(pokemon.name.replace("-", " ")) }}</h2>
             </div>
+
+            <!-- right header -->
             <div class="right_header">
+
+                <!-- numero del pokemon -->
                 <span v-if="this.pokemon.id.toString().length === 1">#000{{ this.pokemon.id }}</span>
                 <span v-else-if="this.pokemon.id.toString().length === 2">#000{{ this.pokemon.id }}</span>
                 <span v-else-if="this.pokemon.id.toString().length === 3">#000{{ this.pokemon.id }}</span>
@@ -545,19 +646,26 @@ export default {
             </div>
         </div>
 
-
-
+        <!-- contenitore dell'immagine -->
         <div class="container_img" v-if="this.pokemon">
+
+            <!-- bottone per il pokemon precedente -->
             <i class="fa fa-chevron-left" aria-hidden="true" @click="prevPokemon(this.pokemon.id)"
                 v-if="this.pokemon.id > 1"></i>
+
+            <!-- immagine del pokemon -->
             <img v-if="pokemon.sprites.other.dream_world.front_default" id="img_poke"
                 :src="pokemon.sprites.other.dream_world.front_default" alt="">
             <img v-else :src="pokemon.sprites.front_default" alt="">
 
+            <!-- bottone per il pokemon seguente -->
             <i class="fa fa-chevron-right" aria-hidden="true" @click="nextPokemon(this.pokemon.id)"></i>
         </div>
 
+        <!-- il corpo dove ci sono i vari dati del pokemon -->
         <div id="body_info">
+
+            <!-- bottone di cattura del pokemon -->
             <div class="catch_btn d-flex justify-content-center mb-2">
                 <button type="button" class="btn btn-warning d-flex align-items-center gap-1" data-toggle="modal"
                     @click="openModal()">
@@ -566,28 +674,30 @@ export default {
                 </button>
             </div>
 
+            <!-- badge per le tipologie del pokemon -->
             <div class="badges" id="badges">
                 <span class="badge_color" v-for="type in this.typesPoke" :style="{ backgroundColor: type.color }">
                     {{ capitalizeFirstLetter(type.name) }}
                 </span>
             </div>
 
+            <!-- info fisiche e ability -->
             <div class="about">
                 <h1>about</h1>
                 <div class="detail_poke">
+
+                    <!--peso pokemon  -->
                     <div class="weight">
                         <div class="top">
                             <i class="fa-solid fa-weight-hanging"></i>
                             {{ number_format(this.pokemon.weight) }} kg
-
-
-
                         </div>
                         <div class="bottom">
                             <h5 class="m-0" :style="{ color: this.colorPage }">Weight</h5>
                         </div>
-
                     </div>
+
+                    <!-- altezza pokemon -->
                     <div class="height">
                         <div class="top">
                             <i class="fa-solid fa-ruler-vertical"></i>
@@ -597,6 +707,8 @@ export default {
                             <h5 class="m-0" :style="{ color: this.colorPage }">Height</h5>
                         </div>
                     </div>
+
+                    <!-- abilita pokemon -->
                     <div class="moves">
                         <div class="top">
                             <span v-for="ability in this.pokemon.abilities">{{
@@ -605,17 +717,22 @@ export default {
                         <div class="bottom">
                             <h5 class="m-0" :style="{ color: this.colorPage }">Abilities</h5>
                         </div>
-
                     </div>
                 </div>
+
+                <!-- descrizione del pokemon -->
                 <p class="description text-dark" style="font-size: 20px;">
                     {{ this.description.replace('', ' ') }}
                 </p>
 
-
+                <!-- statistiche -->
                 <h1>Base Stasts</h1>
+
+                <!-- itero per per le tutte statistiche -->
                 <div class="stats_poke" v-for="stat in this.pokemon.stats">
                     <div id="card_stat" class="card_stat">
+
+                        <!-- condizioni per le varie tipologie statistiche -->
                         <div class="typology" v-if="stat.stat.name == 'hp'">
                             <span class="m-0" :style="{ color: this.colorPage }"><b>HP</b></span>
                         </div>
@@ -635,7 +752,7 @@ export default {
                             <span class="m-0" :style="{ color: this.colorPage }"><b>SPD</b></span>
                         </div>
 
-
+                        <!-- la barra per la statistica -->
                         <div class="stat">
                             <div class="number_stat">{{ stat.base_stat }}</div>
                             <div class="barra_stat">
@@ -647,23 +764,28 @@ export default {
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
 
+                <!-- container per l'evoluzioni pokemon -->
                 <div class="evolution_container mt-5" v-if="evolutionPoke.length > 0">
                     <h2 class="text-center text-secondary">Evolution</h2>
                     <div class="d-flex justify-content-around align-items-center row row-cols-1"
                         :class="'row-cols-lg-' + this.evolutionPoke.length">
+
+                        <!-- card per le evoluzioni -->
                         <div class="card_poke_evolution " v-for="poke in this.evolutionPoke"
                             style="max-width: 200px; height: 220px;">
 
+                            <!-- immagine dell'evoluzione -->
                             <div class="img_pokemon">
                                 <img v-if="!poke.sprites.other.dream_world.front_default" height="200px" class="w-100"
                                     id="img_poke" :src="`${poke.sprites.front_default}`" alt="">
                                 <img v-else id="img_poke" height="200px" class="w-100"
                                     :src="poke.sprites.other.dream_world.front_default" alt="">
                             </div>
+
+                            <!-- nome del pokemon -->
                             <div class="name text-center">
                                 <h5>{{ capitalizeFirstLetter(poke.name.replace("-", " ")) }}</h5>
                             </div>
