@@ -98,6 +98,7 @@ export default {
 
         }
     },
+
     methods: {
         /**
          * funzione che mi rida il pokemon con tutti i suoi dati
@@ -192,6 +193,7 @@ export default {
 
                 }).catch(error => {
                     console.error(error);
+                    this.$router.push({ name: 'home' })
                 })
 
         },

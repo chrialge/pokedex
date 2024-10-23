@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import AppHome from './view/AppHome.vue';
 import TeamPoke from './view/TeamPoke.vue';
 import ShowPoke from './view/showPoke.vue';
+import NotFound from './view/NotFound.vue';
 
 
 const router = createRouter({
@@ -25,12 +26,12 @@ const router = createRouter({
         {
             path: '/teams/:patchMatch(.*)*',
             redirect: { name: 'home' }
-        }
-        // {
-        //     path: '/:patchMatch(.*)*',
-        //     name: 'not-found',
-        //     component: NotFound
-        // },
+        },
+        {
+            path: '/:patchMatch(.*)*',
+            name: 'not-found',
+            component: NotFound
+        },
     ]
 
 })

@@ -12,6 +12,7 @@ export default {
             modalCalcelPokemon: false,
         }
     },
+
     components: {
         HeaderApp,
 
@@ -104,8 +105,19 @@ export default {
                 // modale di cancellazione team
                 this.modalCancelTeam = false;
 
-                // ricarica la pagina
-                location.reload();
+
+                // se ha piu di 0 elementi
+                if (result.length > 0) {
+                    // ricarica la pagina
+                    location.reload();
+
+                    // renderizzo il primo team
+                    this.$router.push({ name: 'teams', params: { slug: result[0].name } })
+
+                } else {
+                    // renderizzo la pagina home
+                    this.$router.push({ name: 'home' })
+                }
             }
         },
         /**

@@ -146,8 +146,8 @@ export default {
          */
         visibleTeam() {
 
-            // se i team non sono visibile
-            if (this.teamsVisible === false) {
+            // se i team non sono visibile e se ci sono i team
+            if (this.teamsVisible === false && this.teams.length > 0) {
 
                 // team diventono visibili
                 this.teamsVisible = true;
@@ -200,30 +200,34 @@ export default {
     <!-- header -->
     <header id="site_header">
 
-        <!-- titolo + logo -->
-        <div class="title">
-            <img src="../../../public/img/pokeball.png" alt="">
-            <h1>
-                Pokedex
-            </h1>
-        </div>
-
-        <!-- rigth del header -->
-        <div class="right_navbar">
-
-            <!-- searchbox -->
-            <div class="searchbar">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="search" name="search" id="search" placeholder="Cerca..." v-model="search"
-                    @keyup="searchPokemon">
+        <div class="row_header">
+            <!-- titolo + logo -->
+            <div class="title">
+                <img src="../../../public/img/pokeball.png" alt="">
+                <h1>
+                    Pokedex
+                </h1>
             </div>
 
-            <!-- bottone per la finestrella di dropdown -->
-            <div class="dropdown_menu" @click="this.dropdown = !this.dropdown" style="cursor: pointer;">
-                <i class="fa-solid fa-bars"></i>
-            </div>
+            <!-- rigth del header -->
+            <div class="right_navbar">
 
+                <!-- searchbox -->
+                <div class="searchbar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="search" name="search" id="search" placeholder="Cerca..." v-model="search"
+                        @keyup="searchPokemon">
+                </div>
+
+                <!-- bottone per la finestrella di dropdown -->
+                <div class="dropdown_menu" @click="this.dropdown = !this.dropdown" style="cursor: pointer;">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
+
+            </div>
         </div>
+
+
 
         <!-- dropmenu -->
         <div class="dropdown_menu py-2" v-show="this.dropdown">
