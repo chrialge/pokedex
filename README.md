@@ -1,5 +1,7 @@
 # Pokedex
 
+link for site is: `https://671a5bee47d2e40a5799c962--pokedexchrialge.netlify.app/`
+
 ![Screenshot 2024-10-24 152753](https://github.com/user-attachments/assets/07e7db30-836a-4ff5-b218-76147ba78d45)
 
 created for one's passion about Pokemon, a showcase website that displays Pokemon and creates your teams. The technologies used are `Vue Js` (with the `vue route` package), `SASS`, and to get such information, I used an `API` service `https://pokeapi.co/` to make these requests, I used `Axios`.
