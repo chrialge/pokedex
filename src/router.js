@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import AppHome from './view/AppHome.vue';
 import TeamPoke from './view/TeamPoke.vue';
-import ShowPoke from './view/showPoke.vue';
+import ShowPoke from './view/ShowPoke.vue';
 import NotFound from './view/NotFound.vue';
 
 
