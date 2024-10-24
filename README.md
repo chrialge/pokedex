@@ -1,6 +1,6 @@
 # Pokedex
 
-![Screenshot 2024-10-24 152753](https://github.com/user-attachments/assets/e2bc8b03-5f8e-4e7a-9335-13e13d55c587)
+![Screenshot 2024-10-24 152753](https://github.com/user-attachments/assets/07e7db30-836a-4ff5-b218-76147ba78d45)
 
 created for one's passion about Pokemon, a showcase website that displays Pokemon and creates your teams. The technologies used are `Vue Js` (with the `vue route` package), `SASS`, and to get such information, I used an `API` service `https://pokeapi.co/` to make these requests, I used `Axios`.
 In the page, you can see that the Pokemon that will be displayed are 50. You can change the results page to view different Pokemon, and there's a search bar to filter Pokemon. There's also a dropdown menu that will show the teams, and a volume control for the music.
