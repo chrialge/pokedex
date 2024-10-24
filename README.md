@@ -1,16 +1,15 @@
 # Pokedex
 
-progetto creato per la propria passione sui pokemon, un sito vetrina che mostra i pokemon e crei i tuoi team, come tecnologie sono state utilizzate Vue Js(con il pacchetto vue route), SASS e per prendere tali informazioni ho utilizzato l'API `https://pokeapi.co/`.
+Project created for one's passion about Pokemon, a showcase website that displays Pokemon and creates your teams. The technologies used are `Vue Js` (with the `vue route` package), `SASS`, and to get such information, I used an `API` service `https://pokeapi.co/` to make these requests, I used `Axios`.
 
-come si vede i pokemon che verrano mostrati nella pagina sono 50, si puo cambiare la pagina di risultati per mostraci pokemon diversi e abbiamo un barra di ricerca per filtrare i pokemon, abbiamo un dropdownmenu dove ci mostrera i team e il volume della musica.
+In the page, you can see that the Pokemon that will be displayed are 50. You can change the results page to view different Pokemon, and there's a search bar to filter Pokemon. There's also a dropdown menu that will show the teams, and a volume control for the music.
 
-per vedere il singolo pokemon bisogna cliccare sul pokemon che ci indirizzera alla sua scheda
+Sure, to view a single Pokemon, you need to click on the Pokemon, which will direct you to its dedicated page
 
-come ben vedete mostera i dati fisiologici, le sue statistiche e le sue evoluzioni, poi cliccando la freccia di detra del pokemon si va al pokemon seguente e quello di sinistra al pokemon precedente.
+As you can see, it shows the Pokemon's physiological data, its statistics, and its evolutions. By clicking the arrow next to the Pokemon, you can view the next Pokemon, and by clicking the arrow on the left, you can view the previous Pokemon.
 
-i pokemon si catturano cliccando sul bottone catch che a sua volta mostrera un modale dove deve essere inserito il nome nuovo o di un team che hai creato tu.
-il massimo di team che puoi avere e 6 e non si puo aggiungere lo stesso pokemon nello stesso team.
+You can catch a Pokemon by clicking on the 'Catch' button, which will display a modal where you need to enter a new name or a team you've already created. The maximum number of teams you can have is 6, and you cannot add the same Pokemon to the same team.
 
-per guardare il proprio team basta ritornare nella home e cliccare sul tasto di fianco della barra di ricerca e fara comparire un messuno a sua volta si clicca su team che poi mostrera i team basta cliccarne uno e ci portera alla pagina del proprio team.
+To view your team, simply return to the home page and click on the button next to the search bar, which will display a menu. Clicking on 'Team' will show you a list of your teams. Clicking on one of them will take you to the page of your team.
 
-inm questa pagina puoi cancellare il proprio team, il singolo pokemon o cliccare sul pokemon per vedere i suoi dati.
+On this page, you can delete your team, a single Pokémon, or click on a Pokémon to view its details.

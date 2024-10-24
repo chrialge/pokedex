@@ -327,6 +327,10 @@ export default {
 
     </main>
 
+    <footer class="text-center text-white">
+        <span>&copy; 2024 Christian Algieri</span>
+    </footer>
+
 
 </template>
 
