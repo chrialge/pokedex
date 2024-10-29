@@ -125,6 +125,26 @@
                     }
                 }
             }
+
+            .container_damage {
+                margin-bottom: 50px;
+                > * {
+                    margin-bottom: 20px;
+                    & > h3 {
+                        font-size: 20px;
+                    }
+
+                    .row-badges {
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 10px;
+                        & > .badge_color {
+                            padding: 7px 10px;
+                            border-radius: 120px;
+                        }
+                    }
+                }
+            }
             .stats_poke {
                 & > .card_stat {
                     display: flex;

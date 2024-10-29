@@ -95,6 +95,12 @@ export default {
                     color: "#fb6f92"
                 },
             ],
+            doubleDamageFrom: null,
+            doubleDamageTo: null,
+            halfDamageFrom: null,
+            halfDamageTo: null,
+            noDamageFrom: null,
+            noDamageTo: null
 
         }
     },
@@ -148,6 +154,122 @@ export default {
 
                             // se la tipologia del pokemon e uguale a quella dellla tipologia della iterazione
                             if (typepoke.type.name == type.type) {
+
+                                axios.get(`https://pokeapi.co/api/v2/type/${typepoke.type.name}`)
+                                    .then((resp) => {
+                                        const response = resp.data
+                                        if (response.damage_relations.double_damage_from.length > 0) {
+                                            this.doubleDamageFrom = response.damage_relations.double_damage_from;
+
+                                            const result = [];
+                                            this.doubleDamageFrom.forEach((objectType) => {
+                                                console.log(objectType)
+                                                this.types.forEach((typeThis) => {
+
+                                                    if (objectType.name === typeThis.type) {
+                                                        result.push(typeThis)
+                                                    }
+                                                })
+                                            })
+
+                                            this.doubleDamageFrom = result
+
+                                            console.log(result, this.doubleDamageFrom)
+                                        }
+                                        if (response.damage_relations.double_damage_to.length > 0) {
+                                            this.doubleDamageTo = response.damage_relations.double_damage_to;
+
+                                            const result = [];
+                                            this.doubleDamageTo.forEach((objectType) => {
+                                                console.log(objectType)
+                                                this.types.forEach((typeThis) => {
+
+                                                    if (objectType.name === typeThis.type) {
+                                                        result.push(typeThis)
+                                                    }
+                                                })
+                                            })
+
+                                            this.doubleDamageTo = result
+
+                                            console.log(result, this.doubleDamageTo)
+                                        }
+
+                                        if (response.damage_relations.half_damage_from.length > 0) {
+                                            this.halfDamageFrom = response.damage_relations.half_damage_from;
+
+                                            const result = [];
+                                            this.halfDamageFrom.forEach((objectType) => {
+                                                console.log(objectType)
+                                                this.types.forEach((typeThis) => {
+
+                                                    if (objectType.name === typeThis.type) {
+                                                        result.push(typeThis)
+                                                    }
+                                                })
+                                            })
+
+                                            this.halfDamageFrom = result
+
+                                            console.log(result, this.halfDamageFrom)
+                                        }
+                                        if (response.damage_relations.half_damage_to.length > 0) {
+                                            this.halfDamageTo = response.damage_relations.half_damage_to;
+
+                                            const result = [];
+                                            this.halfDamageTo.forEach((objectType) => {
+                                                console.log(objectType)
+                                                this.types.forEach((typeThis) => {
+
+                                                    if (objectType.name === typeThis.type) {
+                                                        result.push(typeThis)
+                                                    }
+                                                })
+                                            })
+
+                                            this.halfDamageTo = result
+
+                                            console.log(result, this.halfDamageTo)
+                                        }
+                                        if (response.damage_relations.no_damage_from.length > 0) {
+                                            this.noDamageFrom = response.damage_relations.no_damage_from
+
+                                            const result = [];
+                                            this.noDamageFrom.forEach((objectType) => {
+                                                console.log(objectType)
+                                                this.types.forEach((typeThis) => {
+
+                                                    if (objectType.name === typeThis.type) {
+                                                        result.push(typeThis)
+                                                    }
+                                                })
+                                            })
+
+                                            this.noDamageFrom = result
+
+                                            console.log(result, this.noDamageFrom)
+                                        }
+                                        if (response.damage_relations.no_damage_to.length > 0) {
+                                            this.noDamageTo = response.damage_relations.no_damage_to
+
+                                            const result = [];
+                                            this.noDamageTo.forEach((objectType) => {
+                                                console.log(objectType)
+                                                this.types.forEach((typeThis) => {
+
+                                                    if (objectType.name === typeThis.type) {
+                                                        result.push(typeThis)
+                                                    }
+                                                })
+                                            })
+
+                                            this.noDamageTo = result
+
+                                            console.log(result, this.noDamageTo)
+                                        }
+
+                                        // console.log(this.doubleDamageFrom, this.doubleDamageTo, this.halfDamageFrom, this.halfDamageTo, this.noDamageTo, this.noDamageFrom)
+                                    })
 
                                 // setto un oggetto
                                 const formatType = { name: typepoke.type.name, color: type.color }
@@ -726,6 +848,82 @@ export default {
                 <p class="description text-dark" style="font-size: 20px;">
                     {{ this.description.replace('', ' ') }}
                 </p>
+
+                <!-- container for type -->
+                <div class="container_damage">
+                    <div class="double-damege-from" v-if="this.doubleDamageFrom != null">
+                        <h3>Double Damage From:</h3>
+                        <div class="row-badges">
+                            <span class="badge_color" v-for="type in this.doubleDamageFrom"
+                                :style="{ backgroundColor: type.color }">
+                                {{ capitalizeFirstLetter(type.type) }}
+
+                            </span>
+                        </div>
+
+
+                    </div>
+
+                    <div class="double-damege-to" v-if="this.doubleDamageTo != null">
+                        <h3>Double Damage To:</h3>
+                        <div class="row-badges">
+                            <span class="badge_color" v-for="type in this.doubleDamageTo"
+                                :style="{ backgroundColor: type.color }">
+                                {{ capitalizeFirstLetter(type.type) }}
+
+                            </span>
+                        </div>
+                    </div>
+
+
+                    <div class="half-damege-from" v-if="this.halfDamageFrom != null">
+                        <h3>Half Damage From:</h3>
+                        <div class="row-badges">
+                            <span class="badge_color" v-for="type in this.halfDamageFrom"
+                                :style="{ backgroundColor: type.color }">
+                                {{ capitalizeFirstLetter(type.type) }}
+
+                            </span>
+                        </div>
+                    </div>
+
+
+                    <div class="half-damege-to" v-if="this.halfDamageTo != null">
+                        <h3>Half Damage To:</h3>
+                        <div class="row-badges">
+                            <span class="badge_color" v-for="type in this.halfDamageTo"
+                                :style="{ backgroundColor: type.color }">
+                                {{ capitalizeFirstLetter(type.type) }}
+
+                            </span>
+                        </div>
+                    </div>
+
+
+                    <div class="no-damege-from" v-if="this.noDamageFrom != null">
+                        <h3>No Damage from:</h3>
+                        <div class="row-badges">
+                            <span class="badge_color" v-for="type in this.noDamageFrom"
+                                :style="{ backgroundColor: type.color }">
+                                {{ capitalizeFirstLetter(type.type) }}
+
+                            </span>
+                        </div>
+                    </div>
+
+
+                    <div class="no-damege-to" v-if="this.noDamageTo != null">
+                        <h3>No Damage To:</h3>
+                        <div class="row-badges">
+                            <span class="badge_color" v-for="type in this.noDamageTo"
+                                :style="{ backgroundColor: type.color }">
+                                {{ capitalizeFirstLetter(type.type) }}
+
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
 
                 <!-- statistiche -->
                 <h1>Base Stasts</h1>
