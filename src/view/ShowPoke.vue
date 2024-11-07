@@ -3,6 +3,9 @@ import axios from 'axios';
 import { state } from '../state.js';
 
 
+
+
+
 export default {
     name: 'ShowPoke',
     data() {
@@ -95,12 +98,8 @@ export default {
                     color: "#fb6f92"
                 },
             ],
-            doubleDamageFrom: null,
-            doubleDamageTo: null,
-            halfDamageFrom: null,
-            halfDamageTo: null,
-            noDamageFrom: null,
-            noDamageTo: null
+            attackDamage: [],
+            defenseDamage: [],
 
         }
     },
@@ -117,6 +116,11 @@ export default {
 
             // svuoto le tipologie dei pokemon
             this.typesPoke = [];
+
+            let quadrupleDamageFrom = [];
+            let doubleDamageFrom = [];
+            let halfDamageFrom = [];
+            let noDamageFrom = [];
 
 
 
@@ -147,126 +151,113 @@ export default {
 
                             // setto il colore della pagina
                             this.colorPage = type.color;
+
+
+
+
+
+                            const cc = type.color.replace('#', '')
+                            console.log(cc);
+
+                            // this.state.getIcons();
+
+
+
                         }
+
+
 
                         // itero per tutte le tipologie del pokemon
                         typespoke.forEach(typepoke => {
 
+
+
+
                             // se la tipologia del pokemon e uguale a quella dellla tipologia della iterazione
                             if (typepoke.type.name == type.type) {
+
+                                console.log(typepoke)
 
                                 axios.get(`https://pokeapi.co/api/v2/type/${typepoke.type.name}`)
                                     .then((resp) => {
                                         const response = resp.data
-                                        if (response.damage_relations.double_damage_from.length > 0) {
-                                            this.doubleDamageFrom = response.damage_relations.double_damage_from;
 
-                                            const result = [];
-                                            this.doubleDamageFrom.forEach((objectType) => {
-                                                console.log(objectType)
-                                                this.types.forEach((typeThis) => {
 
-                                                    if (objectType.name === typeThis.type) {
-                                                        result.push(typeThis)
-                                                    }
-                                                })
-                                            })
 
-                                            this.doubleDamageFrom = result
 
-                                            console.log(result, this.doubleDamageFrom)
+
+                                        for (const [key, value] of Object.entries(response.damage_relations)) {
+                                            if (key.includes('from')) {
+                                                if (key.includes('double')) {
+
+                                                    value.forEach((type) => {
+                                                        if (doubleDamageFrom.length === 0) {
+
+                                                            doubleDamageFrom.push(type.name)
+
+                                                        } else {
+                                                            if (!doubleDamageFrom.includes(type.name)) {
+
+                                                                doubleDamageFrom.push(type.name)
+                                                            } else {
+                                                                quadrupleDamageFrom.push(type.name)
+                                                            }
+                                                        }
+
+
+                                                    })
+
+                                                } else if (key.includes('half')) {
+
+                                                    value.forEach((type) => {
+                                                        if (halfDamageFrom.length === 0) {
+
+                                                            halfDamageFrom.push(type.name)
+
+                                                        } else {
+
+                                                            if (!halfDamageFrom.includes(type.name)) {
+
+
+                                                                if (doubleDamageFrom.includes(type.name)) {
+                                                                    const newDoubleDamgeFrom = doubleDamageFrom.filter((typeDamage) => {
+                                                                        // console.log(typeDamage)
+                                                                        if (typeDamage === type.name) {
+                                                                            console.log('togli: ', typeDamage)
+                                                                        } else {
+                                                                            return typeDamage
+                                                                        }
+
+                                                                    })
+                                                                    doubleDamageFrom = newDoubleDamgeFrom;
+
+
+                                                                    console.log(newDoubleDamgeFrom)
+                                                                } else {
+                                                                    halfDamageFrom.push(type.name)
+                                                                }
+
+
+                                                            }
+                                                        }
+
+
+                                                    })
+                                                    console.log(halfDamageFrom, doubleDamageFrom)
+                                                } else {
+
+                                                }
+
+
+
+                                            } else if (key.includes('to')) {
+                                                // console.log(`attacco ${key}: ${value}`);
+
+                                            }
+
                                         }
-                                        if (response.damage_relations.double_damage_to.length > 0) {
-                                            this.doubleDamageTo = response.damage_relations.double_damage_to;
 
-                                            const result = [];
-                                            this.doubleDamageTo.forEach((objectType) => {
-                                                console.log(objectType)
-                                                this.types.forEach((typeThis) => {
 
-                                                    if (objectType.name === typeThis.type) {
-                                                        result.push(typeThis)
-                                                    }
-                                                })
-                                            })
-
-                                            this.doubleDamageTo = result
-
-                                            console.log(result, this.doubleDamageTo)
-                                        }
-
-                                        if (response.damage_relations.half_damage_from.length > 0) {
-                                            this.halfDamageFrom = response.damage_relations.half_damage_from;
-
-                                            const result = [];
-                                            this.halfDamageFrom.forEach((objectType) => {
-                                                console.log(objectType)
-                                                this.types.forEach((typeThis) => {
-
-                                                    if (objectType.name === typeThis.type) {
-                                                        result.push(typeThis)
-                                                    }
-                                                })
-                                            })
-
-                                            this.halfDamageFrom = result
-
-                                            console.log(result, this.halfDamageFrom)
-                                        }
-                                        if (response.damage_relations.half_damage_to.length > 0) {
-                                            this.halfDamageTo = response.damage_relations.half_damage_to;
-
-                                            const result = [];
-                                            this.halfDamageTo.forEach((objectType) => {
-                                                console.log(objectType)
-                                                this.types.forEach((typeThis) => {
-
-                                                    if (objectType.name === typeThis.type) {
-                                                        result.push(typeThis)
-                                                    }
-                                                })
-                                            })
-
-                                            this.halfDamageTo = result
-
-                                            console.log(result, this.halfDamageTo)
-                                        }
-                                        if (response.damage_relations.no_damage_from.length > 0) {
-                                            this.noDamageFrom = response.damage_relations.no_damage_from
-
-                                            const result = [];
-                                            this.noDamageFrom.forEach((objectType) => {
-                                                console.log(objectType)
-                                                this.types.forEach((typeThis) => {
-
-                                                    if (objectType.name === typeThis.type) {
-                                                        result.push(typeThis)
-                                                    }
-                                                })
-                                            })
-
-                                            this.noDamageFrom = result
-
-                                            console.log(result, this.noDamageFrom)
-                                        }
-                                        if (response.damage_relations.no_damage_to.length > 0) {
-                                            this.noDamageTo = response.damage_relations.no_damage_to
-
-                                            const result = [];
-                                            this.noDamageTo.forEach((objectType) => {
-                                                console.log(objectType)
-                                                this.types.forEach((typeThis) => {
-
-                                                    if (objectType.name === typeThis.type) {
-                                                        result.push(typeThis)
-                                                    }
-                                                })
-                                            })
-
-                                            this.noDamageTo = result
-
-                                            console.log(result, this.noDamageTo)
-                                        }
 
                                         // console.log(this.doubleDamageFrom, this.doubleDamageTo, this.halfDamageFrom, this.halfDamageTo, this.noDamageTo, this.noDamageFrom)
                                     })
@@ -274,11 +265,27 @@ export default {
                                 // setto un oggetto
                                 const formatType = { name: typepoke.type.name, color: type.color }
 
+                                // this.defenseDamage.push(doubleDamage)
+
+                                // console.log(doubleDamage, this.defenseDamage)
+
                                 // pusho l'oggetto
                                 this.typesPoke.push(formatType);
                             }
                         })
+
+
+
+
                     });
+
+                    let arrayDefense = {
+                        quadrupleDamageFrom,
+                        doubleDamageFrom,
+                    }
+                    this.defenseDamage = arrayDefense
+                    console.log(this.defenseDamage)
+
 
                     // chiamata api 
                     axios.get(response.data.species.url)
@@ -645,6 +652,14 @@ export default {
         returnPage() {
 
             history.back()
+        },
+
+        showAttackDamage(event) {
+            const attack = event.target
+            console.log(attack)
+            this.typeDamgage = 'attack';
+
+
         }
 
     },
@@ -652,6 +667,8 @@ export default {
 
         // invoco la funzione passando il parameto della rotta
         this.getSinglePokemon(this.$route.params.slug);
+
+        console.log(document.getElementById('attack'))
     }
 
 }
@@ -849,81 +866,10 @@ export default {
                     {{ this.description.replace('', ' ') }}
                 </p>
 
+
+
                 <!-- container for type -->
-                <div class="container_damage">
-                    <div class="double-damege-from" v-if="this.doubleDamageFrom != null">
-                        <h3>Double Damage From:</h3>
-                        <div class="row-badges">
-                            <span class="badge_color" v-for="type in this.doubleDamageFrom"
-                                :style="{ backgroundColor: type.color }">
-                                {{ capitalizeFirstLetter(type.type) }}
 
-                            </span>
-                        </div>
-
-
-                    </div>
-
-                    <div class="double-damege-to" v-if="this.doubleDamageTo != null">
-                        <h3>Double Damage To:</h3>
-                        <div class="row-badges">
-                            <span class="badge_color" v-for="type in this.doubleDamageTo"
-                                :style="{ backgroundColor: type.color }">
-                                {{ capitalizeFirstLetter(type.type) }}
-
-                            </span>
-                        </div>
-                    </div>
-
-
-                    <div class="half-damege-from" v-if="this.halfDamageFrom != null">
-                        <h3>Half Damage From:</h3>
-                        <div class="row-badges">
-                            <span class="badge_color" v-for="type in this.halfDamageFrom"
-                                :style="{ backgroundColor: type.color }">
-                                {{ capitalizeFirstLetter(type.type) }}
-
-                            </span>
-                        </div>
-                    </div>
-
-
-                    <div class="half-damege-to" v-if="this.halfDamageTo != null">
-                        <h3>Half Damage To:</h3>
-                        <div class="row-badges">
-                            <span class="badge_color" v-for="type in this.halfDamageTo"
-                                :style="{ backgroundColor: type.color }">
-                                {{ capitalizeFirstLetter(type.type) }}
-
-                            </span>
-                        </div>
-                    </div>
-
-
-                    <div class="no-damege-from" v-if="this.noDamageFrom != null">
-                        <h3>No Damage from:</h3>
-                        <div class="row-badges">
-                            <span class="badge_color" v-for="type in this.noDamageFrom"
-                                :style="{ backgroundColor: type.color }">
-                                {{ capitalizeFirstLetter(type.type) }}
-
-                            </span>
-                        </div>
-                    </div>
-
-
-                    <div class="no-damege-to" v-if="this.noDamageTo != null">
-                        <h3>No Damage To:</h3>
-                        <div class="row-badges">
-                            <span class="badge_color" v-for="type in this.noDamageTo"
-                                :style="{ backgroundColor: type.color }">
-                                {{ capitalizeFirstLetter(type.type) }}
-
-                            </span>
-                        </div>
-                    </div>
-
-                </div>
 
                 <!-- statistiche -->
                 <h1>Base Stasts</h1>

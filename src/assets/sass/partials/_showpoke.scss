@@ -128,19 +128,45 @@
 
             .container_damage {
                 margin-bottom: 50px;
-                > * {
-                    margin-bottom: 20px;
-                    & > h3 {
-                        font-size: 20px;
+
+                .type_damage {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 10px;
+
+                    .attack,
+                    .defense {
+                        font-size: 30px;
+                        padding: 10px 20px;
+                        border-radius: 15px;
+
+                        & > i {
+                            filter: drop-shadow(1px 1px white);
+                        }
                     }
 
-                    .row-badges {
-                        display: flex;
-                        flex-wrap: wrap;
-                        gap: 10px;
-                        & > .badge_color {
-                            padding: 7px 10px;
-                            border-radius: 120px;
+                    .active {
+                        background-color: rgba(0, 0, 0, 0.257);
+                    }
+
+                    .container_types_damage {
+                        width: 100%;
+                        .defense_damage_container > *,
+                        .attack_damage_container > * {
+                            margin-bottom: 20px;
+                            & > h3 {
+                                font-size: 20px;
+                            }
+
+                            .row-badges {
+                                display: flex;
+                                flex-wrap: wrap;
+                                gap: 10px;
+                                & > .badge_color {
+                                    padding: 7px 10px;
+                                    border-radius: 120px;
+                                }
+                            }
                         }
                     }
                 }

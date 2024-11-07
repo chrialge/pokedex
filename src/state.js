@@ -1,6 +1,9 @@
 
 import { reactive } from 'vue'
 import axios from 'axios'
+import { OAuth } from 'oauth';
+
+
 
 
 //https://pokeapi.co/api/v2/pokemon?offset=0&limit=30
@@ -140,6 +143,29 @@ export const state = reactive({
         })
 
     },
+
+
+    getIcons() {
+        // const request = require('request');
+
+
+
+
+
+        const response = axios.get('https://api.freepik.com/v1/resources', {
+            headers: {
+                'x-freepik-api-key': 'FPSX0ca6531ad59d4145ab7a86682966907f',
+                'Access-Control-Allow-Origin': "*"
+            }
+        });
+
+        response.then((resp) => {
+            console.log(resp)
+        }).catch(err => {
+            console.error(err)
+        })
+
+    }
 
 })
 
