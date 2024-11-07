@@ -127,48 +127,43 @@
             }
 
             .container_damage {
-                margin-bottom: 50px;
-
-                .type_damage {
+                margin-bottom: 20px;
+                .header_damage {
                     display: flex;
-                    flex-wrap: wrap;
-                    gap: 10px;
-
-                    .attack,
-                    .defense {
+                    gap: 5px;
+                    justify-content: center;
+                    margin-bottom: 20px;
+                    & > * {
+                        cursor: pointer;
                         font-size: 30px;
-                        padding: 10px 20px;
-                        border-radius: 15px;
+                        padding: 5px 13px;
 
-                        & > i {
-                            filter: drop-shadow(1px 1px white);
+                        border-radius: 10px;
+
+                        &:hover {
+                            transition: all 0, 3s ease-in-out;
+                            background-color: rgba(0, 0, 0, 0.55);
                         }
                     }
-
-                    .active {
-                        background-color: rgba(0, 0, 0, 0.257);
+                }
+                .type_damage {
+                    > span {
+                        padding: 3px 7px;
+                        border-top: 5px solid;
+                        border-right: 5px solid;
+                        border-left: 5px solid;
+                        border-top-left-radius: 10px;
+                        border-top-right-radius: 10px;
                     }
 
-                    .container_types_damage {
-                        width: 100%;
-                        .defense_damage_container > *,
-                        .attack_damage_container > * {
-                            margin-bottom: 20px;
-                            & > h3 {
-                                font-size: 20px;
-                            }
-
-                            .row-badges {
-                                display: flex;
-                                flex-wrap: wrap;
-                                gap: 10px;
-                                & > .badge_color {
-                                    padding: 7px 10px;
-                                    border-radius: 120px;
-                                }
-                            }
-                        }
-                    }
+                    font-size: 24px;
+                    width: 100%;
+                    text-align: center;
+                }
+                .container_stat_damage {
+                    border: 5px solid;
+                    padding: 10px;
+                    border-radius: 20px;
                 }
             }
             .stats_poke {

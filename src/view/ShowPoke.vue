@@ -100,6 +100,7 @@ export default {
             ],
             attackDamage: [],
             defenseDamage: [],
+            activeDamage: null,
 
         }
     },
@@ -218,6 +219,8 @@ export default {
                                                             }
                                                         }
                                                     })
+
+                                                    console.log(doubleDamageFrom)
                                                 } else if (key.includes('half')) {//altrimenti se la chiave contiene half
 
                                                     // itero tra i valori delle chiave contenente half
@@ -358,7 +361,10 @@ export default {
                         // filtro i risultati dei doppi danni difesa
                         const arrayDoubleFrom = doubleDamageFrom.filter((typeDouble) => {
                             if (!halfDamageFrom.includes(typeDouble)) {
-                                return typeDouble
+                                if (!quadrupleDamageFrom.includes(typeDouble)) {
+                                    return typeDouble
+
+                                }
                             }
                         })
 
@@ -387,7 +393,10 @@ export default {
                         // filtro i risultati dei doppi danni attacco
                         const arrayDoubleTo = doubleDamageTo.filter((typeDouble) => {
                             if (!halfDamageTo.includes(typeDouble)) {
-                                return typeDouble
+                                if (!quadrupleDamageTo.includes(typeDouble)) {
+                                    return typeDouble
+
+                                }
                             }
                         })
 
@@ -403,7 +412,7 @@ export default {
 
                         // stutturo l'oggetto
                         let arrayAttack = {
-                            quadrupleDamageFrom,
+                            quadrupleDamageTo,
                             arrayDoubleTo,
                             arrayHalfTo,
                             noDamageTo
@@ -412,6 +421,8 @@ export default {
                         // sovrascrivo l'istanza conn arrayAttack
                         this.attackDamage = arrayAttack
 
+
+                        console.log(this.defenseDamage, this.attackDamage)
                     }, 1000);
 
 
@@ -475,6 +486,9 @@ export default {
             // aumento di uno l'id
             id++;
 
+            this.activeDamage = null;
+
+
             // invoco la funzione che mi da il pokemon e i suoi dati
             this.getSinglePokemon(id);
         },
@@ -487,7 +501,7 @@ export default {
 
             // diminuisco di uno l'id
             id--;
-
+            this.activeDamage = null;
             // invoco la funzione chi da il pokemon con i suoi dati
             this.getSinglePokemon(id);
         },
@@ -785,14 +799,36 @@ export default {
             history.back()
         },
 
-        showAttackDamage(event) {
-            const attack = event.target
-            console.log(attack)
-            this.typeDamgage = 'attack';
+        showDamage(type) {
+            this.activeDamage = type
+        },
 
+        getColor(type) {
+            console.log(type)
 
+            let color
+            this.types.forEach((typeArray) => {
+                if (type === typeArray.type) {
+                    console.log(typeArray.color)
+
+                    color = typeArray.color
+
+                }
+            })
+
+            return color
         }
 
+    },
+    computed: {
+
+        selectDamage() {
+            if (this.activeDamage === 'attack') {
+                return this.attackDamage
+            } else {
+                return this.defenseDamage
+            }
+        }
     },
     mounted() {
 
@@ -1000,6 +1036,41 @@ export default {
 
 
                 <!-- container for type -->
+                <div class="container_damage">
+                    <div class="header_damage">
+                        <div class="btn_type_damage" @click="showDamage('defense')">
+                            <i class="fa-solid fa-shield" :style="{ color: colorPage }"></i>
+                        </div>
+                        <div class="btn_type_damage" @click="showDamage('attack')">
+                            <i class="fa-solid fa-khanda" :style="{ color: colorPage }"></i>
+                        </div>
+                    </div>
+                    <template v-if="activeDamage !== null">
+                        <div class="type_damage">
+                            <span :style="{ borderColor: colorPage, color: colorPage }">
+                                {{ this.activeDamage }} </span>
+                        </div>
+                        <div class="container_stat_damage" :style="{ borderColor: colorPage }">
+                            <div class="row_damage" v-show="this.activeDamage"
+                                v-for="(typesDamage, index) in selectDamage">
+                                <span v-if="index.includes('quadruple') && typesDamage.length > 0">4X Damage:</span>
+                                <span v-if="index.includes('Double') && typesDamage.length > 0">2X Damage:</span>
+                                <span v-if="index.includes('Half') && typesDamage.length > 0">0.5X Damage:</span>
+                                <span v-if="index.includes('noDamage') && typesDamage.length > 0">0X Damage:</span>
+
+                                <div class="badges" id="badges">
+                                    <span class="badge_color" v-for="type in typesDamage"
+                                        :style="{ backgroundColor: getColor(type) }">
+                                        {{ capitalizeFirstLetter(type) }}
+                                    </span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </template>
+
+
+                </div>
 
 
                 <!-- statistiche -->
