@@ -122,6 +122,11 @@ export default {
             let halfDamageFrom = [];
             let noDamageFrom = [];
 
+            let quadrupleDamageTo = [];
+            let doubleDamageTo = [];
+            let halfDamageTo = [];
+            let noDamageTo = [];
+
 
 
             // setto per formare l'url
@@ -176,98 +181,166 @@ export default {
                             // se la tipologia del pokemon e uguale a quella dellla tipologia della iterazione
                             if (typepoke.type.name == type.type) {
 
-                                console.log(typepoke)
+
 
                                 axios.get(`https://pokeapi.co/api/v2/type/${typepoke.type.name}`)
                                     .then((resp) => {
                                         const response = resp.data
 
-
-
-
-
+                                        // itero nell oggetto con l'indice damage_relations
                                         for (const [key, value] of Object.entries(response.damage_relations)) {
+
+                                            // se la chiave contiene `from `
                                             if (key.includes('from')) {
+
+                                                // se la chiave contiene `double`
                                                 if (key.includes('double')) {
 
+                                                    // itero tra i valori delle chiave contenente double
                                                     value.forEach((type) => {
+
+                                                        // se non contiene niente dentro
                                                         if (doubleDamageFrom.length === 0) {
 
+                                                            // pusho il nome della tipologia
                                                             doubleDamageFrom.push(type.name)
 
                                                         } else {
+                                                            // se non contiene il nome della tipologia
                                                             if (!doubleDamageFrom.includes(type.name)) {
 
+                                                                // pusho il nome della tipologia in doubleDamageFrom
                                                                 doubleDamageFrom.push(type.name)
                                                             } else {
+
+                                                                // pusho il nome della tipologia in quadrupleDamgeFrom
                                                                 quadrupleDamageFrom.push(type.name)
                                                             }
                                                         }
-
-
                                                     })
+                                                } else if (key.includes('half')) {//altrimenti se la chiave contiene half
 
-                                                } else if (key.includes('half')) {
-
+                                                    // itero tra i valori delle chiave contenente half
                                                     value.forEach((type) => {
+
+                                                        // se non contiene niente dentro halfDamageFrom
                                                         if (halfDamageFrom.length === 0) {
 
+                                                            // pusho il nome della tipologia in halfDamageFrom
                                                             halfDamageFrom.push(type.name)
-
                                                         } else {
 
+                                                            // se non contiene il nome della tipologia
                                                             if (!halfDamageFrom.includes(type.name)) {
 
-
-                                                                if (doubleDamageFrom.includes(type.name)) {
-                                                                    const newDoubleDamgeFrom = doubleDamageFrom.filter((typeDamage) => {
-                                                                        // console.log(typeDamage)
-                                                                        if (typeDamage === type.name) {
-                                                                            console.log('togli: ', typeDamage)
-                                                                        } else {
-                                                                            return typeDamage
-                                                                        }
-
-                                                                    })
-                                                                    doubleDamageFrom = newDoubleDamgeFrom;
-
-
-                                                                    console.log(newDoubleDamgeFrom)
-                                                                } else {
-                                                                    halfDamageFrom.push(type.name)
-                                                                }
-
-
+                                                                //pusho il nome della tipologia in halfDamageFrom
+                                                                halfDamageFrom.push(type.name)
                                                             }
                                                         }
 
 
                                                     })
-                                                    console.log(halfDamageFrom, doubleDamageFrom)
+                                                    // console.log(halfDamageFrom, doubleDamageFrom)
                                                 } else {
 
+                                                    // itero tra i valori restanti
+                                                    value.forEach((type) => {
+
+                                                        // se non contiene dentro niente
+                                                        if (noDamageTo.length === 0) {
+
+                                                            // pusho il nome della tipologia
+                                                            noDamageTo.push(type.name)
+                                                        } else {
+
+                                                            // se non contiene il nome della tipologia
+                                                            if (!noDamageTo.includes(type.name)) {
+
+                                                                // pusho il nome della tipologia in noDamageTo
+                                                                noDamageTo.push(type.name)
+                                                            }
+                                                        }
+                                                    })
                                                 }
+                                            } else if (key.includes('to')) {//altrimenti se la chiave contiene `to`
+
+                                                // itero tra i valori delle chiave contenente double
+                                                if (key.includes('double')) {
+
+                                                    // itero tra i valori restanti
+                                                    value.forEach((type) => {
+
+                                                        // se contiente niente dentro
+                                                        if (doubleDamageTo.length === 0) {
+
+                                                            // pusho il nome della tipologia in doubleDamageTo
+                                                            doubleDamageTo.push(type.name)
+                                                        } else {
+
+                                                            // se non contiene il nome della tipologia 
+                                                            if (!doubleDamageTo.includes(type.name)) {
+
+                                                                // pusho il nome della tipologia in doubleDamageTo
+                                                                doubleDamageTo.push(type.name)
+                                                            } else {
+
+                                                                // pusho il nome della tipologia in quadrupleDamageTo
+                                                                quadrupleDamageTo.push(type.name)
+                                                            }
+                                                        }
 
 
+                                                    })
 
-                                            } else if (key.includes('to')) {
-                                                // console.log(`attacco ${key}: ${value}`);
+                                                } else if (key.includes('half')) {//altrimenti se la chiave contiene `half`
 
+                                                    // itero tra i valori delle chiave contenente half
+                                                    value.forEach((type) => {
+                                                        // se non contiene niente dentro
+                                                        if (halfDamageTo.length === 0) {
+
+                                                            // pusho il nome della tipologia
+                                                            halfDamageTo.push(type.name)
+                                                        } else {
+
+                                                            // se non contiene il nome della tipologia
+                                                            if (!halfDamageTo.includes(type.name)) {
+
+                                                                // pusho il nome della tpologia in halfDamgeTo 
+                                                                halfDamageTo.push(type.name)
+                                                            }
+                                                        }
+
+
+                                                    })
+
+                                                } else {
+
+                                                    // itero tra i valori restanti
+                                                    value.forEach((type) => {
+
+                                                        //se non contiene niente dentro 
+                                                        if (noDamageTo.length === 0) {
+
+                                                            // pusho il nome della tipologia
+                                                            noDamageTo.push(type.name)
+                                                        } else {
+
+                                                            // se non contiene il nome della tipologia
+                                                            if (!noDamageTo.includes(type.name)) {
+
+                                                                // pusho il nome della tipologia in noDamageTo
+                                                                noDamageTo.push(type.name)
+                                                            }
+                                                        }
+                                                    })
+                                                }
                                             }
-
                                         }
-
-
-
-                                        // console.log(this.doubleDamageFrom, this.doubleDamageTo, this.halfDamageFrom, this.halfDamageTo, this.noDamageTo, this.noDamageFrom)
                                     })
 
                                 // setto un oggetto
                                 const formatType = { name: typepoke.type.name, color: type.color }
-
-                                // this.defenseDamage.push(doubleDamage)
-
-                                // console.log(doubleDamage, this.defenseDamage)
 
                                 // pusho l'oggetto
                                 this.typesPoke.push(formatType);
@@ -279,12 +352,70 @@ export default {
 
                     });
 
-                    let arrayDefense = {
-                        quadrupleDamageFrom,
-                        doubleDamageFrom,
-                    }
-                    this.defenseDamage = arrayDefense
-                    console.log(this.defenseDamage)
+                    // dopo 1 un secondo
+                    setTimeout(() => {
+
+                        // filtro i risultati dei doppi danni difesa
+                        const arrayDoubleFrom = doubleDamageFrom.filter((typeDouble) => {
+                            if (!halfDamageFrom.includes(typeDouble)) {
+                                return typeDouble
+                            }
+                        })
+
+                        // filtro i risultati dei meta danni difesa
+                        const arrayHalfFrom = halfDamageFrom.filter((typeHalf) => {
+                            if (!doubleDamageFrom.includes(typeHalf)) {
+                                if (!noDamageFrom.includes(typeHalf)) {
+                                    return typeHalf
+                                }
+
+                            }
+                        })
+
+                        // strutturo l'oggetto
+                        let arrayDefense = {
+                            quadrupleDamageFrom,
+                            arrayDoubleFrom,
+                            arrayHalfFrom,
+                            noDamageFrom
+                        }
+
+                        // sovrascrivo l'istanza conn arrayDefense
+                        this.defenseDamage = arrayDefense
+
+
+                        // filtro i risultati dei doppi danni attacco
+                        const arrayDoubleTo = doubleDamageTo.filter((typeDouble) => {
+                            if (!halfDamageTo.includes(typeDouble)) {
+                                return typeDouble
+                            }
+                        })
+
+                        // filtro i risultati dei meta danni attacco
+                        const arrayHalfTo = halfDamageTo.filter((typeHalf) => {
+                            if (!doubleDamageTo.includes(typeHalf)) {
+                                if (!noDamageTo.includes(typeHalf)) {
+                                    return typeHalf
+                                }
+
+                            }
+                        })
+
+                        // stutturo l'oggetto
+                        let arrayAttack = {
+                            quadrupleDamageFrom,
+                            arrayDoubleTo,
+                            arrayHalfTo,
+                            noDamageTo
+                        }
+
+                        // sovrascrivo l'istanza conn arrayAttack
+                        this.attackDamage = arrayAttack
+
+                    }, 1000);
+
+
+
 
 
                     // chiamata api 
