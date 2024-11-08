@@ -1056,6 +1056,12 @@ export default {
                                 {{ this.activeDamage }} </span>
                         </div>
                         <div class="container_stat_damage" :style="{ borderColor: colorPage }">
+
+                            <div class="close_btn_damage" @click="this.activeDamage = null">
+                                <i class="fa fa-close" aria-hidden="true" :style="{ color: colorPage }"></i>
+
+                            </div>
+
                             <div class="row_damage" v-if="this.activeDamage"
                                 v-for="(typesDamage, index) in selectDamage"
                                 :style="{ paddingTop: typesDamage.length > 0 ? '5px' : '' }">
@@ -1064,7 +1070,8 @@ export default {
                                 <span v-if="index.includes('Half') && typesDamage.length > 0">0.5X Damage:</span>
                                 <span v-if="index.includes('noDamage') && typesDamage.length > 0">0X Damage:</span>
 
-                                <div class="badges" v-if="typesDamage.length > 0">
+                                <div class="badges" v-if="typesDamage.length > 0"
+                                    :style="{ boxShadow: '3px 2px ' + colorPage }">
                                     <span class="badge_color" v-for="type in typesDamage"
                                         :style="{ backgroundColor: getColor(type) }">
                                         {{ capitalizeFirstLetter(type) }}
@@ -1124,13 +1131,15 @@ export default {
                 <!-- container per l'evoluzioni pokemon -->
                 <div class="evolution_container mt-5" v-if="evolutionPoke.length > 0">
                     <h2 class="text-center text-secondary">Evolution</h2>
-                    <div class="d-flex justify-content-around align-items-center gap-1">
+                    <div class="d-flex justify-content-around align-items-center gap-3">
 
                         <!-- card per le evoluzioni -->
                         <div class="card_poke_evolution " v-for="poke in this.evolutionPoke">
 
+
                             <!-- immagine dell'evoluzione -->
-                            <div class="img_pokemon">
+                            <div class="img_pokemon" :style="{ boxShadow: '2px 2px 5px ' + colorPage }"
+                                @click="getSinglePokemon(poke.id)">
                                 <img v-if="!poke.sprites.other.dream_world.front_default" id="img_poke"
                                     :src="`${poke.sprites.front_default}`" alt="">
                                 <img v-else id="img_poke" :src="poke.sprites.other.dream_world.front_default" alt="">
@@ -1138,7 +1147,9 @@ export default {
 
                             <!-- nome del pokemon -->
                             <div class="name text-center">
-                                <h5>{{ capitalizeFirstLetter(poke.name.replace("-", " ")) }}</h5>
+                                <h5 :style="{ boxShadow: '2px 2px 5px ' + colorPage }">
+                                    {{ capitalizeFirstLetter(poke.name.replace("-", " ")) }}
+                                </h5>
                             </div>
 
                         </div>

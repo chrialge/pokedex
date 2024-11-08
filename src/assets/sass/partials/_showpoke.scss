@@ -168,7 +168,14 @@
                     border: 5px solid;
                     padding: 10px;
                     border-radius: 20px;
+                    position: relative;
 
+                    .close_btn_damage {
+                        position: absolute;
+                        right: 30px;
+                        font-size: 25px;
+                        cursor: pointer;
+                    }
                     .row_damage {
                         & > span:first-child {
                             font-size: 18px;
@@ -181,7 +188,7 @@
                             border: 3px solid transparent;
                             border-radius: 10px;
                             background-color: rgba(213, 213, 213, 0.494);
-                            box-shadow: 3px 2px black;
+
                             flex-wrap: wrap;
                             justify-content: flex-start;
 
@@ -224,12 +231,23 @@
             .evolution_container {
                 .d-flex {
                     flex-wrap: wrap;
+
                     .card_poke_evolution {
+                        .name {
+                            margin-top: 10px;
+                            & > h5 {
+                                padding: 1px 14px;
+                                display: inline;
+                                background-color: rgba(213, 213, 213, 0.494);
+
+                                border-radius: 17px;
+                            }
+                        }
                         .img_pokemon {
-                            border: 3px solid trasparent;
+                            cursor: pointer;
                             padding: 20px 34px;
                             background-color: rgba(213, 213, 213, 0.494);
-                            box-shadow: 2px 2px 5px gray;
+
                             height: 160px;
                             border-radius: 50%;
                             & > img {
