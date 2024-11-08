@@ -145,6 +145,10 @@
                             background-color: rgba(0, 0, 0, 0.55);
                         }
                     }
+
+                    .active {
+                        background-color: rgba(0, 0, 0, 0.55);
+                    }
                 }
                 .type_damage {
                     > span {
@@ -164,6 +168,31 @@
                     border: 5px solid;
                     padding: 10px;
                     border-radius: 20px;
+
+                    .row_damage {
+                        & > span:first-child {
+                            font-size: 18px;
+                            font-weight: 500;
+                            color: gray;
+                        }
+                        .badges {
+                            margin-top: 5px;
+                            padding: 5px;
+                            border: 3px solid transparent;
+                            border-radius: 10px;
+                            background-color: rgba(213, 213, 213, 0.494);
+                            box-shadow: 3px 2px black;
+                            flex-wrap: wrap;
+                            justify-content: flex-start;
+
+                            .badge_color {
+                                padding: 5px 7px;
+                                border-radius: 13px;
+                                font-size: 15px;
+                                font-weight: 500;
+                            }
+                        }
+                    }
                 }
             }
             .stats_poke {
@@ -187,6 +216,25 @@
                         & > .barra_stat {
                             max-width: 100%;
                             flex-grow: 1;
+                        }
+                    }
+                }
+            }
+
+            .evolution_container {
+                .d-flex {
+                    flex-wrap: wrap;
+                    .card_poke_evolution {
+                        .img_pokemon {
+                            border: 3px solid trasparent;
+                            padding: 20px 34px;
+                            background-color: rgba(213, 213, 213, 0.494);
+                            box-shadow: 2px 2px 5px gray;
+                            height: 160px;
+                            border-radius: 50%;
+                            & > img {
+                                height: 100%;
+                            }
                         }
                     }
                 }

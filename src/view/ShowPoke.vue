@@ -817,6 +817,9 @@ export default {
             })
 
             return color
+        },
+        showRow(typesDamage) {
+            console.log(typesDamage)
         }
 
     },
@@ -835,7 +838,7 @@ export default {
         // invoco la funzione passando il parameto della rotta
         this.getSinglePokemon(this.$route.params.slug);
 
-        console.log(document.getElementById('attack'))
+
     }
 
 }
@@ -1038,10 +1041,12 @@ export default {
                 <!-- container for type -->
                 <div class="container_damage">
                     <div class="header_damage">
-                        <div class="btn_type_damage" @click="showDamage('defense')">
+                        <div class="btn_type_damage" @click="showDamage('defense')"
+                            :class="[activeDamage === 'defense' ? 'active' : '']">
                             <i class="fa-solid fa-shield" :style="{ color: colorPage }"></i>
                         </div>
-                        <div class="btn_type_damage" @click="showDamage('attack')">
+                        <div class="btn_type_damage" @click="showDamage('attack')"
+                            :class="[activeDamage === 'attack' ? 'active' : '']">
                             <i class="fa-solid fa-khanda" :style="{ color: colorPage }"></i>
                         </div>
                     </div>
@@ -1051,14 +1056,15 @@ export default {
                                 {{ this.activeDamage }} </span>
                         </div>
                         <div class="container_stat_damage" :style="{ borderColor: colorPage }">
-                            <div class="row_damage" v-show="this.activeDamage"
-                                v-for="(typesDamage, index) in selectDamage">
+                            <div class="row_damage" v-if="this.activeDamage"
+                                v-for="(typesDamage, index) in selectDamage"
+                                :style="{ paddingTop: typesDamage.length > 0 ? '5px' : '' }">
                                 <span v-if="index.includes('quadruple') && typesDamage.length > 0">4X Damage:</span>
                                 <span v-if="index.includes('Double') && typesDamage.length > 0">2X Damage:</span>
                                 <span v-if="index.includes('Half') && typesDamage.length > 0">0.5X Damage:</span>
                                 <span v-if="index.includes('noDamage') && typesDamage.length > 0">0X Damage:</span>
 
-                                <div class="badges" id="badges">
+                                <div class="badges" v-if="typesDamage.length > 0">
                                     <span class="badge_color" v-for="type in typesDamage"
                                         :style="{ backgroundColor: getColor(type) }">
                                         {{ capitalizeFirstLetter(type) }}
@@ -1118,19 +1124,16 @@ export default {
                 <!-- container per l'evoluzioni pokemon -->
                 <div class="evolution_container mt-5" v-if="evolutionPoke.length > 0">
                     <h2 class="text-center text-secondary">Evolution</h2>
-                    <div class="d-flex justify-content-around align-items-center row row-cols-1"
-                        :class="'row-cols-lg-' + this.evolutionPoke.length">
+                    <div class="d-flex justify-content-around align-items-center gap-1">
 
                         <!-- card per le evoluzioni -->
-                        <div class="card_poke_evolution " v-for="poke in this.evolutionPoke"
-                            style="max-width: 200px; height: 220px;">
+                        <div class="card_poke_evolution " v-for="poke in this.evolutionPoke">
 
                             <!-- immagine dell'evoluzione -->
                             <div class="img_pokemon">
-                                <img v-if="!poke.sprites.other.dream_world.front_default" height="200px" class="w-100"
-                                    id="img_poke" :src="`${poke.sprites.front_default}`" alt="">
-                                <img v-else id="img_poke" height="200px" class="w-100"
-                                    :src="poke.sprites.other.dream_world.front_default" alt="">
+                                <img v-if="!poke.sprites.other.dream_world.front_default" id="img_poke"
+                                    :src="`${poke.sprites.front_default}`" alt="">
+                                <img v-else id="img_poke" :src="poke.sprites.other.dream_world.front_default" alt="">
                             </div>
 
                             <!-- nome del pokemon -->
